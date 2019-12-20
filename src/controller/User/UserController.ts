@@ -1,10 +1,15 @@
-import {Controller, RequestMapping} from "../../decorator";
+import {Controller, RequestMapping, AutoWriteService} from "../../decorator";
 import {RequestMethod} from "../../utils";
 
 @Controller("/user")
-class User {
+export default class User {
+
+    @AutoWriteService("UserService")
+    private userService: any;
+
     @RequestMapping("list", RequestMethod.GET)
     public getList(params: any, req: any, res: any) {
+
         return {
             message: "success list",
             data: {},

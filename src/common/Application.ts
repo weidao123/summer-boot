@@ -4,6 +4,7 @@ import {ControllerContainer} from "../utils";
 const express= require("express");
 const fs = require("fs");
 const path = require("path");
+const bodyParser = require("body-parser");
 
 /**
  * 应用程序基类
@@ -13,14 +14,13 @@ export abstract class Application {
     protected constructor(rootPath?: string) {
 
         const app = express();
-        const bodyParser = require("body-parser");
 
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({extended: false}));
 
         app.listen(this.config().port, () => console.log(this.config().message));
 
-        app.all("*",  (req: any, res: any, next: any) => {
+        app.all("*",  (req: any, res: any) => {
 
             let url: string = req.url;
             let method: RequestType = req.method;
@@ -31,12 +31,13 @@ export abstract class Application {
             url = url.split("?")[0];
             let parent: string = url.split("/")[1];
             let path: string = url.split("/")[2];
-
             this.routerMapping(parent, path, method, req, res, allParams)
-                .catch(() => res.send("404"));
+                .catch(() => res.sendStatus(404));
         });
 
+        // 开始加载controller、service repository
         rootPath = rootPath || path.join(__dirname, "../");
+        this.load(rootPath, "service");
         this.load(rootPath, "controller");
     }
 
@@ -49,23 +50,14 @@ export abstract class Application {
      * @param res    response对象
      * @param params 请求的params
      */
-    protected async routerMapping(parent: string, path: string, method: RequestType, req: any, res: any, params: any, ) {
+    protected async routerMapping(parent: string, path: string, method: RequestType, req: any, res: any, params: any) {
         parent = "/" + parent;
-        path = "/" + path;
-        const Container: any = (ControllerContainer as any).Container;
-        if(!(Container as any)[parent]) {
-            return Promise.reject(false);
+        const target: any = await ControllerContainer.getMethod(parent, path, params, req, res);
+        if(target) {
+            res.send(target);
+            return true;
         }
-
-        if(!(Container as any)[parent][method]) {
-            return Promise.reject(false);
-        }
-
-        if(!(Container as any)[parent][method][path]) {
-            return Promise.reject(false);
-        }
-        const result: any = await (Container as any)[parent][method][path](params, req, res);
-        res.send(result);
+        return Promise.reject(false);
     }
 
     public abstract config(): InitConfigParams;

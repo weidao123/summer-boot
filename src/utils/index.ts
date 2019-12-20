@@ -1,5 +1,5 @@
 import {RequestType} from "../types";
-import ControllerContainer from "./container";
+import ControllerContainer from "../container/container";
 
 export class RequestMethod{
     public static GET: RequestType = "GET";

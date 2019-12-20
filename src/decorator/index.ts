@@ -1,5 +1,6 @@
 import {RequestType} from "../types";
 import {ControllerContainer, RequestMethod} from "../utils";
+import ServiceContainer from "../container/service";
 
 export function RequestMapping(path: string, method: RequestType = RequestMethod.GET) {
     return function (target: any, name?: string | any, desc?: any) {
@@ -25,10 +26,22 @@ export function Controller(path: string) {
             let method: any = target.prototype[key];
             let requestMethod: RequestType = method.METHOD;
             let methodPath = method.PATH;
-            if(typeof method === 'function' && key !== 'constructor') {
-                ControllerContainer.addMethod(requestMethod, path, methodPath, method);
+            if(typeof method === 'function' && key !== 'constructor' && methodPath) {
+                ControllerContainer.addMethod(requestMethod, path, methodPath, target);
             }
         });
-        return  target;
+        return new target();
+    }
+}
+
+export function Service(serviceName: string) {
+    return function (target: any) {
+        ServiceContainer.addService(serviceName, new target());
+    }
+}
+
+export function AutoWriteService(serviceName: string) {
+    return function (target: any, name: string) {
+        target[name] = ServiceContainer.getService(serviceName);
     }
 }

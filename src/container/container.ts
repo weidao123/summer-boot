@@ -4,11 +4,7 @@
 import {RequestType} from "../types";
 
 interface Container {
-    [key: string]: {
-        [method: string]: {
-            [path: string]: any
-        }
-    }
+    [key: string]: any
 }
 
 class ControllerContainer {
@@ -22,15 +18,22 @@ class ControllerContainer {
         }
 
         parent = "/" + parent.replace(/\//, "");
-        path = "/" + path.replace(/\//, "");
 
         if(!this.Container[parent]) {
             this.Container[parent] = {};
         }
-        if(!this.Container[parent][method]) {
-            this.Container[parent][method] = {};
+        this.Container[parent] = new target();
+    }
+
+    public async getMethod(parent: string, path: string, params: any, req: any, res: any) {
+        const parents: any = this.Container[parent].constructor.prototype;
+        const keys: string[] = Object.getOwnPropertyNames(parents);
+        for (let key of keys) {
+            if(parents[key].PATH && parents[key].PATH === path) {
+                return await parents[key](params, req, res);
+            }
         }
-        this.Container[parent][method][path] = target;
+        return null;
     }
 }
 
