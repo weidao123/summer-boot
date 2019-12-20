@@ -15,7 +15,6 @@ export function RequestMapping(path: string, method: RequestType = RequestMethod
         if(typeof target === 'function') {
             return  {};
         }
-
     }
 }
 
