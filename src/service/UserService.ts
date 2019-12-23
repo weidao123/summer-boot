@@ -1,6 +1,5 @@
-import {Service} from "../decorator";
+import {User} from "../model/User";
 
-@Service("UserService")
-class UserService {
-    public name: string = "test name";
+export interface UserService {
+    list(): User[];
 }

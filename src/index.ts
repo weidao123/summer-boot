@@ -1,8 +1,6 @@
 import {Application} from "./common/Application";
 import {InitConfigParams} from "./types";
 
-// import "./controller/UserController";
-
 class Main extends Application {
     constructor() {
         super();
