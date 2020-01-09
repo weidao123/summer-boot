@@ -1,5 +1,5 @@
-import {Controller, RequestMapping, AutoWriteService} from "../decorator";
-import {RequestMethod} from "../utils";
+import {Controller, RequestMapping, AutoWriteService} from "../libs/decorator";
+import {RequestMethod} from "../libs/utils";
 import {UserService} from "../service/UserService";
 import {ResParams, ResponseStatus} from "../model/Response";
 import {User} from "../model/User";

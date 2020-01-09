@@ -12,6 +12,12 @@ class InterceptorContainer {
         }
     }
 
+    /**
+     * 调用容器里面的拦截器
+     * @param allParams
+     * @param req
+     * @param res
+     */
     public async checkInterceptor(allParams: any, req: any, res: any): Promise<boolean> {
         for (const key in this.container) {
             const Item = this.container[key];

@@ -9,7 +9,6 @@ class Config extends ApplicationConfig {
 class LoginInterceptor extends Interceptor {
     public url: string = "*";
     public before(params: any, req: any, res: any): boolean {
-        console.log(req._parentURL);
         return true;
     }
 }
@@ -17,14 +16,14 @@ class LoginInterceptor extends Interceptor {
 class RulesInterceptor extends Interceptor {
     public url: string = "/user";
     public before(params: any, req: any, res: any): boolean {
-        res.send("已经拦截/user下面的请求");
-        return false;
+        console.log("已经拦截/user下面的请求");
+        return true;
     }
 }
 
 class App extends Application {
     constructor() {
-        super();
+        super(__dirname + "\\");
     }
 }
 

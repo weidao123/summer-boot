@@ -1,4 +1,4 @@
-import {Service} from "../../decorator";
+import {Service} from "../../libs/decorator";
 import {User} from "../../model/User";
 import {UserService} from "../UserService";
 

@@ -1,5 +1,5 @@
-import {RequestType} from "../types";
-import {ControllerContainer} from "../utils";
+import {RequestType} from "./types";
+import {ControllerContainer} from "./utils";
 import { ApplicationContainer } from "./config/ApplicationContainer";
 import { ApplicationConfig } from "./config/ApplicationConfig";
 import {LoadFileUtils} from "./utils/LoadFileUtils";
@@ -7,7 +7,6 @@ import {interceptorContainer} from "./Interceptor/InterceptorContainer";
 import {Interceptor} from "./Interceptor/Interceptor";
 
 const express = require("express");
-const fs = require("fs");
 const path = require("path");
 const bodyParser = require("body-parser");
 const app = express();
@@ -45,8 +44,8 @@ export abstract class Application {
             let allParams: any = Object.assign({}, body, query);
 
             req._parentURL = url[0];
-            if (!await interceptorContainer.checkInterceptor(allParams, req, res)) {
-                res.sendStatus(401);
+            const isInterceptor: boolean = await interceptorContainer.checkInterceptor(allParams, req, res);
+            if (!isInterceptor) {
                 return false;
             }
             this.routerMapping(url, method, req, res, allParams)

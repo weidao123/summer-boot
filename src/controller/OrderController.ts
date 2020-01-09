@@ -1,5 +1,5 @@
-import {AutoWriteService, Controller, RequestMapping} from "../decorator";
-import {RequestMethod} from "../utils";
+import {AutoWriteService, Controller, RequestMapping} from "../libs/decorator";
+import {RequestMethod} from "../libs/utils";
 import {UserService} from "../service/UserService";
 
 @Controller("/order")
