@@ -1,3 +1,6 @@
+/**
+ * 拦截器抽象类
+ */
 export abstract class Interceptor {
     /**
      * 要拦截的地址 （控制器的类路径： /user）
