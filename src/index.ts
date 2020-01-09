@@ -4,6 +4,7 @@ import {Interceptor} from "./libs/Interceptor/Interceptor";
 
 class Config extends ApplicationConfig {
     public port: number = 9090;
+    public service: string = 'service';
 }
 
 class LoginInterceptor extends Interceptor {

@@ -1,8 +1,8 @@
 import ApplicationConfigType from "../types/ApplicationConfig";
 import {ApplicationConfig} from "./ApplicationConfig";
 
-class Container implements ApplicationConfigType{
-    public port: number;
+class Container {
+    public applicationConfig: ApplicationConfigType;
 
     public setConfig(handle: any): void {
         const target: ApplicationConfig = new handle();
@@ -10,12 +10,14 @@ class Container implements ApplicationConfigType{
             throw new Error("config class must extends ApplicationConfig");
         }
 
-        this.port = target.port;
+        this.applicationConfig = target;
     }
 
     public getConfig(): Container {
         return this;
     }
+
+
 }
 
 export const ApplicationContainer: Container = new Container();

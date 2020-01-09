@@ -26,12 +26,13 @@ export abstract class Application {
     public start(): any {
 
         const applicationContainer = ApplicationContainer;
+        const port: number = ApplicationContainer.applicationConfig.port;
 
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({extended: false}));
 
-        app.listen(applicationContainer.port, () => {
-            const str: string = `【running success】: your app is running here http://localhost:${ApplicationContainer.port}`;
+        app.listen(port, () => {
+            const str: string = `【running success】: your app is running here http://localhost:${port}`;
             console.log(str);
         });
 
@@ -53,10 +54,12 @@ export abstract class Application {
         });
 
         let rootPath = this.rootPath;
+        let serviceName = applicationContainer.applicationConfig.service;
+        let controllerName = applicationContainer.applicationConfig.controller;
         // 开始加载controller、service repository
         rootPath = rootPath || path.join(__dirname, "../");
-        LoadFileUtils.load(`${rootPath}\\service`);
-        LoadFileUtils.load(`${rootPath}\\controller`);
+        LoadFileUtils.load(`${rootPath}\\${serviceName}`);
+        LoadFileUtils.load(`${rootPath}\\${controllerName}`);
     }
 
     /**
