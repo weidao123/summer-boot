@@ -23,11 +23,12 @@ class RulesInterceptor extends Interceptor {
 
 class App extends Application {
     constructor() {
-        super(__dirname + "\\");
+        super(__dirname);
     }
 }
 
-new App().addApplicationConfig(Config)
+new App()
+    .addApplicationConfig(Config)
     .addInterceptor(new LoginInterceptor())
     .addInterceptor(new RulesInterceptor())
     .start();

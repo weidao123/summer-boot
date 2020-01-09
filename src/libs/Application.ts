@@ -16,8 +16,8 @@ const app = express();
  */
 export abstract class Application {
 
-    protected constructor(rootPath?: string) {
-        this.rootPath = rootPath;
+    protected constructor(dirname?: string) {
+        this.rootPath = dirname;
         // 加载默认配置
         this.addApplicationConfig(ApplicationConfig);
     }
@@ -55,8 +55,8 @@ export abstract class Application {
         let rootPath = this.rootPath;
         // 开始加载controller、service repository
         rootPath = rootPath || path.join(__dirname, "../");
-        LoadFileUtils.load(`${rootPath}service`);
-        LoadFileUtils.load(`${rootPath}controller`);
+        LoadFileUtils.load(`${rootPath}\\service`);
+        LoadFileUtils.load(`${rootPath}\\controller`);
     }
 
     /**
