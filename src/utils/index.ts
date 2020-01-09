@@ -1,7 +1,7 @@
 import {RequestType} from "../types";
 import ControllerContainer from "../container/container";
 
-export class RequestMethod{
+export class RequestMethod {
     public static GET: RequestType = "GET";
     public static POST: RequestType = "POST";
     public static DELETE: RequestType = "DELETE";

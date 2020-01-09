@@ -7,7 +7,7 @@ export function RequestMapping(path: string, method: RequestType = RequestMethod
 
         //装饰于方法
         if(typeof target === 'object') {
-            desc.value.PATH = path;
+            desc.value.PATH = path.replace("/", "");
             desc.value.METHOD = method;
         }
 
@@ -39,8 +39,8 @@ export function Service(serviceName: string) {
     }
 }
 
-export function AutoWriteService(serviceName: string) {
+export function AutoWriteService(serviceName?: string) {
     return function (target: any, name: string) {
-        target[name] = ServiceContainer.getService(serviceName);
+        target[name] = ServiceContainer.getService(serviceName || name);
     }
 }

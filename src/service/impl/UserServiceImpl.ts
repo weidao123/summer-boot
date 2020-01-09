@@ -3,7 +3,7 @@ import {User} from "../../model/User";
 import {UserService} from "../UserService";
 
 @Service("UserService")
-class UserServiceImpl implements UserService{
+export default class UserServiceImpl implements UserService{
     public list(): User[] {
         return [
             new User("大翠", 18),

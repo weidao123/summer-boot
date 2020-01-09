@@ -1,29 +1,19 @@
 import {Controller, RequestMapping, AutoWriteService} from "../decorator";
 import {RequestMethod} from "../utils";
 import {UserService} from "../service/UserService";
+import {ResParams, ResponseStatus} from "../model/Response";
+import {User} from "../model/User";
 
 @Controller("/user")
-export default class User {
+export default class UserController {
 
-    @AutoWriteService("UserService")
-    protected userService: UserService;
+    @AutoWriteService()
+    protected UserService: UserService;
 
     @RequestMapping("list", RequestMethod.GET)
-    public getList({id, name}: any, req: any, res: any) {
-
-        return {
-            message: "request params ID=" + id + "NAME:" + name,
-            data: this.userService.list(),
-            code: 1
-        };
-    }
-
-    @RequestMapping("submit", RequestMethod.POST)
-    public submit(params: any, req: any, res: any) {
-        return {
-            message: "success submit",
-            data: {},
-            code: 1
-        };
+    public list(params: any, req: any, res: any): ResParams<any> {
+        // console.log(this.UserService.list());
+        // console.log("被访问了");
+        return new ResParams<User[]>(ResponseStatus.SUCCESS, this.UserService.list());
     }
 }

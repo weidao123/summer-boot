@@ -17,7 +17,7 @@ class ControllerContainer {
             throw new Error("parent path is required");
         }
 
-        parent = "/" + parent.replace(/\//, "");
+        parent = parent.replace(/\//, "");
 
         if(!this.Container[parent]) {
             this.Container[parent] = {};
@@ -28,12 +28,16 @@ class ControllerContainer {
     public async getMethod(parent: string, path: string, params: any, req: any, res: any) {
         const parents: any = this.Container[parent].constructor.prototype;
         const keys: string[] = Object.getOwnPropertyNames(parents);
-        for (let key of keys) {
-            if(parents[key].PATH && parents[key].PATH === path) {
-                return await parents[key](params, req, res);
+        try {
+            for (let key of keys) {
+                const methodPath = parents[key].PATH;
+                if(methodPath && methodPath === path) {
+                    return await parents[key](params, req, res);
+                }
             }
+        } catch (e) {
+            return null;
         }
-        return null;
     }
 }
 
