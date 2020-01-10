@@ -1,4 +1,5 @@
-import {Service} from "../../libs/decorator";
+// @ts-ignore
+import {Service} from "../../libs/dist";
 import {User} from "../../model/User";
 import {UserService} from "../UserService";
 

@@ -1,7 +1,5 @@
-import {Application} from "./libs/Application";
-import {ApplicationConfig} from "./libs/config/ApplicationConfig";
-import {Interceptor} from "./libs/Interceptor/Interceptor";
-import {EntryApplication} from "./libs/decorator";
+// @ts-ignore
+import {ApplicationConfig, Application, Interceptor, EntryApplication} from "./libs/dist";
 
 class Config extends ApplicationConfig {
     public port: number = 9090;
