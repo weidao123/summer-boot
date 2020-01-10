@@ -13,7 +13,6 @@ export default class UserController {
     @RequestMapping("list", RequestMethod.GET)
     public list(params: any, req: any, res: any): ResParams<any> {
         // console.log(this.UserService.list());
-        console.log(params);
         return new ResParams<User[]>(ResponseStatus.SUCCESS, this.UserService.list());
     }
 }

@@ -1,6 +1,7 @@
 import {RequestType} from "../types";
 import {ControllerContainer, RequestMethod} from "../utils";
 import ServiceContainer from "../container/service";
+import {Application} from "../Application";
 
 /**
  * 控制器里面的方法路由的装饰器
@@ -64,4 +65,20 @@ export function AutoWriteService(serviceName?: string) {
     return function (target: any, name: string) {
         target[name] = ServiceContainer.getService(serviceName || name);
     }
+}
+
+/**
+ * 启动应用程序
+ * @param target
+ * @constructor
+ */
+export function EntryApplication(target: any) {
+    const t = new target();
+    if (!(t instanceof Application)) {
+        throw new Error("EntryApplication must extends Application");
+    }
+    if (t.addConfig && typeof t.addConfig === "function") {
+        t.addConfig(t);
+    }
+    t.start();
 }

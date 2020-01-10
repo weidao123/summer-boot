@@ -22,7 +22,8 @@ export abstract class Application {
         this.addApplicationConfig(ApplicationConfig);
     }
 
-    protected rootPath: string;
+    public abstract addConfig(application: Application): Application;
+    public rootPath: string;
     public start(): any {
 
         const applicationContainer = ApplicationContainer;
@@ -32,7 +33,7 @@ export abstract class Application {
         app.use(bodyParser.urlencoded({extended: false}));
 
         app.listen(port, () => {
-            const str: string = `【running success】: your app is running here http://localhost:${port}`;
+            const str: string = `【SUCCESS】: Your app is running here http://localhost:${port}`;
             console.log(str);
         });
 

@@ -1,6 +1,7 @@
 import {Application} from "./libs/Application";
 import {ApplicationConfig} from "./libs/config/ApplicationConfig";
 import {Interceptor} from "./libs/Interceptor/Interceptor";
+import {EntryApplication} from "./libs/decorator";
 
 class Config extends ApplicationConfig {
     public port: number = 9090;
@@ -9,6 +10,7 @@ class Config extends ApplicationConfig {
 
 class LoginInterceptor extends Interceptor {
     public url: string = "*";
+
     public before(params: any, req: any, res: any): boolean {
         return true;
     }
@@ -16,20 +18,24 @@ class LoginInterceptor extends Interceptor {
 
 class RulesInterceptor extends Interceptor {
     public url: string = "/user";
+
     public before(params: any, req: any, res: any): boolean {
-        console.log(params);
+        console.log("拦截 user");
         return true;
     }
 }
 
+@EntryApplication
 class App extends Application {
     constructor() {
         super(__dirname);
     }
-}
 
-new App()
-    .addApplicationConfig(Config)
-    .addInterceptor(new LoginInterceptor())
-    .addInterceptor(new RulesInterceptor())
-    .start();
+    public addConfig(application: Application): Application {
+        application
+            .addApplicationConfig(Config)
+            .addInterceptor(new LoginInterceptor())
+            .addInterceptor(new RulesInterceptor());
+        return application;
+    }
+}
