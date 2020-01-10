@@ -2,6 +2,7 @@
  * 容器
  */
 import {RequestType} from "../types";
+import {interceptorContainer} from "../Interceptor/InterceptorContainer";
 
 interface Container {
     [key: string]: any
@@ -30,7 +31,7 @@ class ControllerContainer {
      * @param req
      * @param res
      */
-    public async getMethod(params: any, req: any, res: any) {
+    public async getMethod(params: any, req: any, res: any): Promise<boolean> {
         const url = req.url.substring(1).split("?");
         const requestUrl = url[0].split("/");
         // 控制器的路径
@@ -38,8 +39,8 @@ class ControllerContainer {
         // 方法的路径
         const path = requestUrl[1];
         const parents: any = this.Container[parent].constructor.prototype;
-
         const keys: string[] = Object.getOwnPropertyNames(parents);
+        req._parentURL = requestUrl[0];
         try {
             for (let key of keys) {
                 if (parents[key].PATH) {
@@ -56,14 +57,20 @@ class ControllerContainer {
                                 }
                             });
                         } else if(methodPath.length === 1 && requestUrl.length !== 2) {
-                            return null;
+                            return false;
                         }
-                        return await parents[key](params, req, res);
+                        // 调用拦截器
+                        const isInterceptor: boolean = await interceptorContainer.checkInterceptor(params, req, res);
+                        if (isInterceptor && typeof isInterceptor === 'boolean') {
+                            const response: any = await parents[key](params, req, res);
+                            res.send(response);
+                        }
+                        return true;
                     }
                 }
             }
         } catch (e) {
-            return null;
+            return false;
         }
     }
 }

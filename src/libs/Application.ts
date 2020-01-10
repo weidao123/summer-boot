@@ -38,19 +38,11 @@ export abstract class Application {
 
         app.all("*",  async (req: any, res: any) => {
 
-            let url: string = req.url.substring(1).split("/");
             let method: RequestType = req.method;
             let body: any = req.body;
             let query: any = req.query || {};
             let allParams: any = Object.assign({}, body, query);
-
-            req._parentURL = url[0];
-            const isInterceptor: boolean = await interceptorContainer.checkInterceptor(allParams, req, res);
-            if (!isInterceptor) {
-                return false;
-            }
-            this.routerMapping(method, req, res, allParams)
-                .catch(() => res.sendStatus(404));
+            this.routerMapping(method, req, res, allParams).catch(() => res.sendStatus(404));;
         });
 
         let rootPath = this.rootPath;
@@ -89,11 +81,9 @@ export abstract class Application {
      */
     protected async routerMapping(method: RequestType, req: any, res: any, params: any) {
         const target: any = await ControllerContainer.getMethod(params, req, res);
-        if(target) {
-            res.send(target);
-            return true;
+        if(!target) {
+            return Promise.reject(false);
         }
-        return Promise.reject(false);
     }
 
 }
