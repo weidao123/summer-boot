@@ -38,7 +38,7 @@ export abstract class Application {
 
         app.all("*",  async (req: any, res: any) => {
 
-            let url: string[] = req.url.substring(1).split("/");
+            let url: string = req.url.substring(1).split("/");
             let method: RequestType = req.method;
             let body: any = req.body;
             let query: any = req.query || {};
@@ -49,7 +49,7 @@ export abstract class Application {
             if (!isInterceptor) {
                 return false;
             }
-            this.routerMapping(url, method, req, res, allParams)
+            this.routerMapping(method, req, res, allParams)
                 .catch(() => res.sendStatus(404));
         });
 
@@ -82,16 +82,13 @@ export abstract class Application {
 
     /**
      * 在容器中匹配对应的方法
-     * @param url 路径
      * @param method 请求类型
      * @param req    request对象
      * @param res    response对象
      * @param params 请求的params
      */
-    protected async routerMapping(url: string[], method: RequestType, req: any, res: any, params: any) {
-        let parent: string = url[0];
-        let path: string = url[1];
-        const target: any = await ControllerContainer.getMethod(parent, path, params, req, res);
+    protected async routerMapping(method: RequestType, req: any, res: any, params: any) {
+        const target: any = await ControllerContainer.getMethod(params, req, res);
         if(target) {
             res.send(target);
             return true;

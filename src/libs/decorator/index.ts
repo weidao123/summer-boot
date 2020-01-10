@@ -13,7 +13,7 @@ export function RequestMapping(path: string, method: RequestType = RequestMethod
 
         //装饰于方法
         if(typeof target === 'object') {
-            desc.value.PATH = path.replace("/", "");
+            desc.value.PATH = path;
             desc.value.METHOD = method;
         }
 

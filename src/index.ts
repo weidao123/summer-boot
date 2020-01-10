@@ -18,6 +18,7 @@ class RulesInterceptor extends Interceptor {
     public url: string = "/user";
     public before(params: any, req: any, res: any): boolean {
         console.log("已经拦截/user下面的请求");
+        console.log(params);
         return true;
     }
 }
