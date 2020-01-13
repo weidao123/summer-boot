@@ -1,5 +1,5 @@
 // @ts-ignore
-import {Controller, RequestMapping, AutoWriteService, RequestMethod} from "../libs/dist";
+import {Controller, RequestMapping, AutoWriteService, RequestMethod} from "../node-spring-mvc";
 import {UserService} from "../service/UserService";
 import {ResParams, ResponseStatus} from "../model/Response";
 import {User} from "../model/User";

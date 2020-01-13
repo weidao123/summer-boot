@@ -1,5 +1,5 @@
 // @ts-ignore
-import {ApplicationConfig, Application, Interceptor, EntryApplication} from "./libs/dist";
+import {ApplicationConfig, Application, Interceptor, EntryApplication} from "./node-spring-mvc";
 
 class Config extends ApplicationConfig {
     public port: number = 9090;

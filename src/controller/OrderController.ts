@@ -1,5 +1,5 @@
 // @ts-ignore
-import {AutoWriteService, Controller, RequestMapping, RequestMethod} from "../libs/dist";
+import {AutoWriteService, Controller, RequestMapping, RequestMethod} from "../node-spring-mvc";
 import {UserService} from "../service/UserService";
 
 @Controller("/order")
