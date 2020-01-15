@@ -11,8 +11,9 @@ class UserController {
     protected UserService: UserService;
 
     @RequestMapping("list", RequestMethod.GET)
-    public list(params: any, req: any, res: any): ResParams<User[]> {
+    public list(params: any, req: Request, res: Response): ResParams<User[]> {
         // console.log(this.UserService.list());
+
         return new ResParams<User[]>(ResponseStatus.SUCCESS, this.UserService.list());
     }
 }

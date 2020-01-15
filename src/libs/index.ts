@@ -3,6 +3,7 @@ import { Application } from "./Application";
 import { RequestMethod } from "./utils";
 import { ApplicationConfig } from "./config/ApplicationConfig";
 import { Interceptor } from "./Interceptor/Interceptor";
+import { HttpRequest, HttpResponse } from "./types";
 
 export {
     Controller,
@@ -13,5 +14,7 @@ export {
     Application,
     RequestMethod,
     ApplicationConfig,
-    Interceptor
+    Interceptor,
+    HttpRequest,
+    HttpResponse,
 }

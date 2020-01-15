@@ -469,10 +469,10 @@ negotiator@0.6.2:
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.2.tgz#feacf7ccf525a77ae9634436a64883ffeca346fb"
   integrity sha512-hZXc7K2e+PgeI1eDBe/10Ard4ekbfrrqG8Ep+8Jmf4JID2bNg7NvCPOZN+kfF574pFQI7mum2AUqDidoKqcTOw==
 
-node-spring-mvc@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/node-spring-mvc/-/node-spring-mvc-1.0.1.tgz#4e9a4815a08032029358d5370ce4384156970004"
-  integrity sha512-+AUcpVka2ECwHSz7WqZ3/YLXDzGkMqOwXC5+5MSqeH/MHoN6B4yanpA9grLuuzB5t0ioq0QtpP1emvMGL7YSSg==
+node-spring-mvc@^1.0.44:
+  version "1.0.44"
+  resolved "https://registry.yarnpkg.com/node-spring-mvc/-/node-spring-mvc-1.0.44.tgz#e0792f32fba1f6850e7199e5a4594f7525faf546"
+  integrity sha512-prKUNgnRhtgc1cpG1hFtqv01L36qC5jIPhw2Al0HmGNVxTery1RgffQhwUBmlxyD4A5RfeUcrGxs8dccPz9qJQ==
   dependencies:
     "@types/express" "^4.17.2"
     body-parser "^1.19.0"

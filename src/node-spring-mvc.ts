@@ -1,6 +1,7 @@
 /**
  * 导入相关依赖包
  */
+
 export {
     Service,
     Interceptor,
@@ -11,7 +12,7 @@ export {
     RequestMapping,
     AutoWriteService,
     Application
-} from "node-spring-mvc";
+} from 'node-spring-mvc';
 
 // export {
 //     Service,

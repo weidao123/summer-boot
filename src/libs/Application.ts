@@ -43,7 +43,7 @@ export abstract class Application {
             let body: any = req.body;
             let query: any = req.query || {};
             let allParams: any = Object.assign({}, body, query);
-            this.routerMapping(method, req, res, allParams).catch(() => res.sendStatus(404));;
+            this.routerMapping(method, req, res, allParams).catch(() => res.sendStatus(404));
         });
 
         let rootPath = this.rootPath;

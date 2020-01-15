@@ -1,15 +1,17 @@
 {
-  "name": "node-spring",
-  "version": "1.0.0",
-  "description": "",
-  "main": "./index.ts",
-  "types": "./types/index.d.ts",
+  "name": "node-spring-mvc",
+  "version": "1.0.44",
+  "description": "NodeJS的一个MVC库，提供Java Spring 书写方式",
+  "main": "dist/index.js",
+  "types": "dist/types/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "start": "ts-node src/index.ts"
   },
-  "author": "",
+  "files": ["dist", "./package.json"],
+  "keywords": ["node, node-mvc, node-spring-mvc, node-spring"],
+  "author": "weidao",
   "license": "ISC",
   "dependencies": {
     "@types/express": "^4.17.2",

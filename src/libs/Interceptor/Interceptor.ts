@@ -1,6 +1,8 @@
 /**
  * 拦截器抽象类
  */
+import {HttpRequest, HttpResponse} from "../types";
+
 export abstract class Interceptor {
     /**
      * 要拦截的地址 （控制器的类路径： /user）
@@ -12,6 +14,6 @@ export abstract class Interceptor {
      * @param req
      * @param res
      */
-    public abstract before(params: any, req: any, res: any): boolean;
+    public abstract before(params: any, req: HttpRequest, res: HttpResponse): boolean;
     // public abstract after(params: any, req: any, res: any): void;
 }
