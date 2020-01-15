@@ -1,27 +1,6 @@
-// @ts-ignore
-import {ApplicationConfig, Application, Interceptor, EntryApplication} from "./node-spring-mvc";
-
-class Config extends ApplicationConfig {
-    public port: number = 9090;
-    public service: string = 'service';
-}
-
-class LoginInterceptor extends Interceptor {
-    public url: string = "*";
-
-    public before(params: any, req: any, res: any): boolean {
-        return true;
-    }
-}
-
-class RulesInterceptor extends Interceptor {
-    public url: string = "/user";
-
-    public before(params: any, req: any, res: any): boolean {
-        console.log("拦截 user");
-        return true;
-    }
-}
+import {Application, EntryApplication} from "./node-spring-mvc";
+import {LoginInterceptor, RulesInterceptor} from "./interceptor";
+import {Config} from "./config";
 
 @EntryApplication
 class App extends Application {

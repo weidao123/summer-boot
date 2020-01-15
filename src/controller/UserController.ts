@@ -5,13 +5,13 @@ import {ResParams, ResponseStatus} from "../model/Response";
 import {User} from "../model/User";
 
 @Controller("/user")
-export default class UserController {
+class UserController {
 
     @AutoWriteService()
     protected UserService: UserService;
 
     @RequestMapping("list", RequestMethod.GET)
-    public list(params: any, req: any, res: any): ResParams<any> {
+    public list(params: any, req: any, res: any): ResParams<User[]> {
         // console.log(this.UserService.list());
         return new ResParams<User[]>(ResponseStatus.SUCCESS, this.UserService.list());
     }

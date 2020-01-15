@@ -16,7 +16,7 @@ const app = express();
  */
 export abstract class Application {
 
-    protected constructor(dirname?: string) {
+    protected constructor(dirname: string) {
         this.rootPath = dirname;
         // 加载默认配置
         this.addApplicationConfig(ApplicationConfig);
