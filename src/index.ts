@@ -1,11 +1,11 @@
-import {Application, EntryApplication} from "./node-spring-mvc";
+import {Application, EntryApplication} from "./node-spring";
 import {LoginInterceptor, RulesInterceptor} from "./interceptor";
 import {Config} from "./config";
 
 @EntryApplication
 class App extends Application {
     constructor() {
-        super(__dirname);
+        super();
     }
 
     public addConfig(application: Application): Application {
@@ -16,3 +16,4 @@ class App extends Application {
         return application;
     }
 }
+

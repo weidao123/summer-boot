@@ -1,5 +1,5 @@
 // @ts-ignore
-import {Service} from "../../node-spring-mvc";
+import {Service} from "../../node-spring";
 import {User} from "../../model/User";
 import {UserService} from "../UserService";
 

@@ -1,4 +1,4 @@
-import {ApplicationConfig} from "../node-spring-mvc";
+import {ApplicationConfig} from "../node-spring";
 
 export class Config extends ApplicationConfig {
     public port: number = 9090;

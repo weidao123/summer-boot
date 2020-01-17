@@ -16,7 +16,7 @@ const app = express();
  */
 export abstract class Application {
 
-    protected constructor(dirname: string) {
+    protected constructor(dirname?: string) {
         this.rootPath = dirname;
         // 加载默认配置
         this.addApplicationConfig(ApplicationConfig);
@@ -46,13 +46,12 @@ export abstract class Application {
             this.routerMapping(method, req, res, allParams).catch(() => res.sendStatus(404));
         });
 
-        let rootPath = this.rootPath;
         let serviceName = applicationContainer.applicationConfig.service;
         let controllerName = applicationContainer.applicationConfig.controller;
+        let resourceDir = applicationContainer.applicationConfig.resourceDir;
         // 开始加载controller、service repository
-        rootPath = rootPath || path.join(__dirname, "../");
-        LoadFileUtils.load(`${rootPath}\\${serviceName}`);
-        LoadFileUtils.load(`${rootPath}\\${controllerName}`);
+        LoadFileUtils.load(path.resolve(resourceDir, serviceName));
+        LoadFileUtils.load(path.resolve(resourceDir, controllerName));
     }
 
     /**

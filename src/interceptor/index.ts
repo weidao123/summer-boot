@@ -1,4 +1,4 @@
-import {Interceptor} from "../node-spring-mvc";
+import {Interceptor} from "../node-spring";
 
 export class LoginInterceptor extends Interceptor {
     public url: string = "*";

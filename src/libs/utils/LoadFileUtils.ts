@@ -17,8 +17,8 @@ export class LoadFileUtils {
                 if (fs.statSync(fPath).isDirectory()) {
                     method = [...this.load(fPath)];
                 } else {
-                    console.log(rootPath + "/" + item);
-                    const file = require(rootPath + "/" + item.replace(".ts", ""));
+                    console.log("【REQUIRE】" + fPath);
+                    const file = require(path.join(rootPath, path.basename(item, ".ts")));
                     method.push(file);
                 }
             });

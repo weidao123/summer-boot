@@ -10,4 +10,5 @@ export abstract class ApplicationConfig implements ApplicationConfigType {
     public controller: string = "controller";
     // Service所在目录 默认 /src/service
     public service: string = "service";
+    public resourceDir: string = "src";
 }
