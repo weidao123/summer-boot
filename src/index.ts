@@ -16,4 +16,3 @@ class App extends Application {
         return application;
     }
 }
-

@@ -69,13 +69,13 @@ export function AutoWriteService(serviceName?: string) {
 
 /**
  * 启动应用程序
- * @param target
+ * @param target 类的本身
  * @constructor
  */
 export function EntryApplication(target: any) {
     const t = new target();
     if (!(t instanceof Application)) {
-        throw new Error("EntryApplication must extends Application");
+        throw new Error("EntryApplication must extends Application class");
     }
     if (t.addConfig && typeof t.addConfig === "function") {
         t.addConfig(t);

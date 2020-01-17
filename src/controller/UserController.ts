@@ -16,4 +16,3 @@ class UserController {
         return new ResParams<User[]>(ResponseStatus.SUCCESS, this.UserService.list());
     }
 }
-

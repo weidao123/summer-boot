@@ -1,6 +1,6 @@
 {
   "name": "node-spring-mvc",
-  "version": "1.0.45",
+  "version": "1.0.46",
   "description": "NodeJS的一个MVC库，提供Java Spring 书写方式",
   "main": "dist/index.js",
   "types": "dist/types/index.d.ts",

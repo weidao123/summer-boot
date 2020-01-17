@@ -24,8 +24,11 @@ export abstract class Application {
 
     public abstract addConfig(application: Application): Application;
     public rootPath: string;
-    public start(): any {
 
+    /**
+     * 启动程序的入口方法
+     */
+    public start(): void {
         const applicationContainer = ApplicationContainer;
         const port: number = ApplicationContainer.applicationConfig.port;
 
