@@ -41,7 +41,7 @@ export default class Logger {
     public static info(str: string) {
         const msg = getLogContent("INFO", str);
         logger.warn(msg);
-        console.warn(process.env.NODE_ENV);
+        console.warn(msg);
     }
 
     public static debug(str: string) {

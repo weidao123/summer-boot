@@ -1,3 +1,5 @@
+#!/usr/bin/env ts-node
+
 import Logger from "../util/logger";
 import {Application} from "../index";
 import {isAgent, WorkerType} from "./worker-type";

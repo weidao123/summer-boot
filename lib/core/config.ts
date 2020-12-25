@@ -1,6 +1,7 @@
 import {Request, Response, NextFunction, Application} from "express";
 
 const path = require("path");
+const fs = require("fs");
 
 export interface ErrorHandler {
     errorHandler(req: Request, res: Response, next?: NextFunction);
@@ -25,9 +26,11 @@ export class Config {
 
     public static merge() {
         // 加载默认的配置文件
-        const confPath = path.resolve(process.cwd(), Config.conf.configFile);
-        const conf = require(confPath).default || {};
-        Object.assign(Config.conf, conf);
+        const confPath = path.resolve(process.cwd(), 'summer-boot.json');
+        if (fs.existsSync(confPath)) {
+            const conf = require(confPath) || {};
+            Object.assign(Config.conf, conf);
+        }
     }
 
     public port?: number = 8080;
@@ -38,7 +41,6 @@ export class Config {
     public logDir?: string = "logs";
 
     // 文件 会优先加载 ts文件 后加载js文件
-    public configFile?: string = "app/config/config";
     public starterHandlerFile?: string = "app/config/starter-handler";
 
     public ssrTemplate?: string = "index.html";

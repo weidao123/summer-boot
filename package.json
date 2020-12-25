@@ -1,7 +1,7 @@
 {
   "name": "summer-boot",
-  "version": "0.1.1",
-  "main": "lib/dist/index.js",
+  "version": "0.1.6",
+  "main": "./dist/index.js",
   "typings": "./dist/typing/index.d.ts",
   "description": "mvc to node",
   "author": {
@@ -10,7 +10,8 @@
   },
   "license": "MIT",
   "scripts": {
-    "start": "node server/app.js ENV=production",
+    "rel": "npm run build && npm publish",
+    "start": "ts-node ./lib/runtime/bootstrap.ts",
     "build": "tsc"
   },
   "dependencies": {
@@ -39,5 +40,8 @@
     "package.json",
     "tsconfig.json",
     "README.md"
-  ]
+  ],
+  "bin": {
+    "summer-boot": "dist/runtime/bootstrap.js"
+  }
 }
