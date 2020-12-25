@@ -1,14 +1,10 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "module": "commonjs",
-    "declaration": false,
-    "removeComments": true,
-    "outDir": "./dist",
     "experimentalDecorators": true,
-    "listFiles": true,
-    "noImplicitAny": true,
-    "allowSyntheticDefaultImports": true
+    "target": "es5",
+    "module": "commonjs",
+    "declaration": true,
+    "outDir": "./dist",
+    "declarationDir": "./dist/typing"
   }
-//  "exclude": ["node_modules"]
 }

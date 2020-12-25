@@ -1,3 +1,4 @@
 /dist/
+/typing/
 /node_modules/**
 /src/libs/dist/**
