@@ -13,7 +13,8 @@ export enum MetaKey {
     SERVICE = "SERVICE",
     INJECT = "INJECT",
     COMPONENT = "COMPONENT",
-    INTERCEPTOR = "INTERCEPTOR",
+    INTERCEPTOR_HANDLER = "INTERCEPTOR_HANDLER",
+    ERROR_HANDLER = "ERROR_HANDLER",
 }
 
 export enum RequestMethod {
@@ -141,6 +142,25 @@ export function Autowrite() {
  */
 export function Interceptor(path?: string) {
     return function (target: Constructor) {
-        Reflect.defineMetadata(MetaKey.INTERCEPTOR, { rules: path ? Path2Regexp.pathToRegexp(path) : null }, target);
+        Reflect.defineMetadata(MetaKey.INTERCEPTOR_HANDLER,
+            {
+                rules: path ? Path2Regexp.pathToRegexp(path) : null,
+                type: MetaKey.INTERCEPTOR_HANDLER,
+            },
+            target);
+    }
+}
+
+/**
+ * 全局异常处理器
+ */
+export function ErrorHandler() {
+    return function (target: Constructor) {
+        Reflect.defineMetadata(MetaKey.ERROR_HANDLER,
+            {
+                rules: undefined,
+                type: MetaKey.ERROR_HANDLER,
+            },
+            target);
     }
 }

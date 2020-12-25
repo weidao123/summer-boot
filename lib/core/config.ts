@@ -4,9 +4,8 @@ const path = require("path");
 const fs = require("fs");
 const worker = require("os").cpus().length;
 
-export interface ErrorHandler {
-    errorHandler(req: Request, res: Response, next?: NextFunction);
-    notFoundHandler(req: Request, res: Response, next?: NextFunction);
+export interface ExceptionHandler {
+    exception(req: Request, res: Response, e: Error);
 }
 
 export interface InterceptorHandler {
@@ -15,7 +14,8 @@ export interface InterceptorHandler {
 }
 
 export interface StarterHandler {
-    before?(app: Application): void;
+    before(app: Application): void;
+    after(app: Application): void;
 }
 
 export class Config {
@@ -49,7 +49,7 @@ export class Config {
     public staticDir?: string = "public";
 
     // 文件 会优先加载 ts文件 后加载js文件
-    public starterHandlerFile?: string = "app/config/starter-handler";
+    public starterHandlerFile?: string = "app/application";
 
     public ssrTemplate?: string = "index.html";
 

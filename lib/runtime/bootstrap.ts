@@ -49,5 +49,5 @@ if (cluster.isMaster) {
 
 if (isAgent()) {
     sendMessage(WorkerStatus.AGENT_START_SUCCESS);
-    // agent进程。。。。
+    // agent进程做点啥。。。。
 }

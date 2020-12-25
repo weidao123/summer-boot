@@ -22,7 +22,8 @@ export default class ParserDecorate {
                 const controller = Reflect.hasMetadata(MetaKey.CONTROLLER, fun);
                 const service = Reflect.hasMetadata(MetaKey.SERVICE, fun);
                 const component = Reflect.hasMetadata(MetaKey.COMPONENT, fun);
-                const interceptor = Reflect.hasMetadata(MetaKey.INTERCEPTOR, fun);
+                const interceptor = Reflect.hasMetadata(MetaKey.INTERCEPTOR_HANDLER, fun);
+                const errorHandler = Reflect.hasMetadata(MetaKey.ERROR_HANDLER, fun);
                 if (controller) {
                     this.parseController(fun);
                 }
@@ -32,11 +33,22 @@ export default class ParserDecorate {
                 }
 
                 if (interceptor) {
-                    const { rules } = Reflect.getMetadata(MetaKey.INTERCEPTOR, fun);
+                    const { rules, type } = Reflect.getMetadata(MetaKey.INTERCEPTOR_HANDLER, fun);
                     Container.addInterceptor({
                         rules,
                         func: fun,
                         instance: new fun(),
+                        type,
+                    });
+                }
+
+                if (errorHandler) {
+                    const { rules, type } =  Reflect.getMetadata(MetaKey.ERROR_HANDLER, fun);
+                    Container.addInterceptor({
+                        rules,
+                        func: fun,
+                        instance: new fun(),
+                        type,
                     });
                 }
             }

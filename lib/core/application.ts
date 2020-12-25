@@ -29,7 +29,7 @@ export default class Application {
         // 静态资源目录
         app.use(express.static(path.resolve(workDir, staticDir)));
 
-        // 加载启动处理器
+        // 加载 App生命周期
         const staterHandlerPath = path.resolve(workDir, starterHandlerFile);
         const Handle = Loader.loadFile(Loader.getPathAsExtname(staterHandlerPath));
         this.starterHandler = Handle ? new Handle() : null;
@@ -50,7 +50,12 @@ export default class Application {
         }
         app.all("*", invoke);
         const port = Config.getConfig().port;
-        app.listen(port, () => sendMessage(WorkerStatus.START_SUCCESS));
+        app.listen(port, () => {
+            if (this.starterHandler)
+            this.starterHandler.after && this.starterHandler.after(app);
+            // 通知主进程 启动成功
+            sendMessage(WorkerStatus.START_SUCCESS);
+        });
     }
 
 }

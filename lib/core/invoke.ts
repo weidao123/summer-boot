@@ -3,15 +3,22 @@ import Container from "./container";
 import {Request, Response, NextFunction} from "express";
 import {MetaKey, RequestMethod} from "./decorate";
 import Logger from "../util/logger";
-import {InterceptorHandler} from "./config";
+import {ExceptionHandler, InterceptorHandler} from "./config";
 
 /**
  * 调用实际的接口方法
  */
 export async function invoke(req: Request, res: Response, next: NextFunction) {
-    const value = Container.get(req.path, req.method.toUpperCase() as RequestMethod);
-    const interceptors = Container.getInterceptor(req.path);
-    if (value) {
+
+    try {
+        const value = Container.get(req.path, req.method.toUpperCase() as RequestMethod);
+
+        if (!value) {
+            res.status(404);
+            throw new Error("404 Not Found")
+        }
+
+        const interceptors = Container.getInterceptor(req.path);
         const args = [];
 
         // 注入query参数
@@ -42,32 +49,31 @@ export async function invoke(req: Request, res: Response, next: NextFunction) {
         if (resData) args[resData.index] = res;
 
         let response;
-        try {
-            Logger.info(`${req.ip} ${req.url}`);
-            // 调用请求拦截器
-            for (const interceptor of interceptors) {
-                const isNext = await (interceptor.instance as InterceptorHandler).before(req, res);
-                if (isNext === false) {
-                    throw new Error("request interceptor return false");
-                }
+        Logger.info(`${req.ip} ${req.url}`);
+        // 调用请求拦截器
+        for (const interceptor of interceptors) {
+            const isNext = await (interceptor.instance as InterceptorHandler).before(req, res);
+            if (isNext === false) {
+                return;
             }
-            response = await value.func.call(value.instance, ...args);
-
-            // 调用响应拦截器
-            for (const interceptor of interceptors) {
-                response = await (interceptor.instance as InterceptorHandler).after(req, res, response);
-            }
-            res.send(response);
-
-        } catch (e) {
-            Logger.error(req.url);
-            Logger.error(e);
-            res.status(500);
-            res.send("<h1>500 Server Error</h1><br /> " + e);
         }
-        return;
-    }
+        response = await value.func.call(value.instance, ...args);
 
-    res.status(404);
-    res.send("<h1>404 Not Found</h1>");
+        // 调用响应拦截器
+        for (const interceptor of interceptors) {
+            response = await (interceptor.instance as InterceptorHandler).after(req, res, response);
+        }
+        res.send(response);
+    } catch (e) {
+        Logger.error(req.url);
+        Logger.error(e);
+        const errorHandler = Container.getErrorHandler();
+        if (errorHandler.length !== 0) {
+            errorHandler.forEach(item => {
+                (item.instance as ExceptionHandler).exception(req, res, e);
+            });
+        } else {
+            res.send(e);
+        }
+    }
 }

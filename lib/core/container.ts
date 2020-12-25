@@ -1,4 +1,4 @@
-import {RequestMethod} from "./decorate";
+import {MetaKey, RequestMethod} from "./decorate";
 
 // 可被注入的组件服务
 interface Component {
@@ -14,14 +14,17 @@ interface Controller extends Component {
 }
 
 // Interceptor
-interface Interceptor extends Component {
+interface Handler extends Component {
     rules: RegExp | null;
+    type: HandlerType;
 }
+
+type HandlerType = MetaKey.INTERCEPTOR_HANDLER | MetaKey.ERROR_HANDLER;
 
 class ContainerMap {
     public controller: Map<string, Controller> = new Map<string, Controller>();
     public component: Component[] = [];
-    public interceptor: Interceptor[] = [];
+    public handler: Handler[] = [];
 
     public getAllValues() {
         const values = [...this.component];
@@ -113,9 +116,10 @@ class Container {
     }
 
     // 获取拦截器
-    public getInterceptor(path: string): Interceptor[] {
+    public getInterceptor(path: string): Handler[] {
         const res = [];
-        for (const interceptor of this.container.interceptor) {
+        const handlers = this.container.handler.filter(item => item.type === MetaKey.INTERCEPTOR_HANDLER);
+        for (const interceptor of handlers) {
             if (!interceptor.rules || interceptor.rules.test(path)) {
                 res.push(interceptor);
             }
@@ -123,9 +127,14 @@ class Container {
         return res;
     }
 
-    // 获取拦截器
-    public addInterceptor(inter: Interceptor): void {
-        this.container.interceptor.push(inter);
+    // 获取全局异常拦截器
+    public getErrorHandler() {
+        return this.container.handler.filter(item => item.type === MetaKey.ERROR_HANDLER);
+    }
+
+    // 添加handler
+    public addInterceptor(inter: Handler): void {
+        this.container.handler.push(inter);
     }
 }
 
