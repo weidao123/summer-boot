@@ -22,11 +22,22 @@ export default class ParserDecorate {
                 const controller = Reflect.hasMetadata(MetaKey.CONTROLLER, fun);
                 const service = Reflect.hasMetadata(MetaKey.SERVICE, fun);
                 const component = Reflect.hasMetadata(MetaKey.COMPONENT, fun);
+                const interceptor = Reflect.hasMetadata(MetaKey.INTERCEPTOR, fun);
                 if (controller) {
                     this.parseController(fun);
                 }
+
                 if (service || component) {
                     this.parseService(fun);
+                }
+
+                if (interceptor) {
+                    const { rules } = Reflect.getMetadata(MetaKey.INTERCEPTOR, fun);
+                    Container.addInterceptor({
+                        rules,
+                        func: fun,
+                        instance: new fun(),
+                    });
                 }
             }
             next = entries.next();

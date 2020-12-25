@@ -1,8 +1,8 @@
 import Loader from "../util/loader";
 import ParserDecorate from "../util/parser-decorate";
 import {invoke} from "./invoke";
-import Logger from "../util/logger";
 import {Config, StarterHandler} from "./config";
+import {sendMessage, WorkerStatus} from "../runtime/worker";
 
 const bodyParser = require("body-parser");
 const path = require("path");
@@ -24,24 +24,23 @@ export default class Application {
 
     constructor() {
         // 全局配置
-        Logger.info(`start init`);
-        const {baseDir, starterHandlerFile} = Config.getConfig();
+        const {baseDir, starterHandlerFile, staticDir} = Config.getConfig();
+
+        // 静态资源目录
+        app.use(express.static(path.resolve(workDir, staticDir)));
 
         // 加载启动处理器
-        Logger.info(`load handler`);
         const staterHandlerPath = path.resolve(workDir, starterHandlerFile);
         const Handle = Loader.loadFile(Loader.getPathAsExtname(staterHandlerPath));
         this.starterHandler = Handle ? new Handle() : null;
 
         // 加载工作目录的所有组件
         const base = Loader.load(path.resolve(workDir, baseDir));
-        Logger.info(`scan dir [${baseDir}] complete`);
 
         // 解析加载的组件
         ParserDecorate.parser(base);
 
         // 注入服务
-        Logger.info(`inject service`);
         ParserDecorate.parserAutowrite();
     }
 
@@ -51,7 +50,7 @@ export default class Application {
         }
         app.all("*", invoke);
         const port = Config.getConfig().port;
-        app.listen(port, () => Logger.info("application running hare http://127.0.0.1:" + port))
+        app.listen(port, () => sendMessage(WorkerStatus.START_SUCCESS));
     }
 
 }

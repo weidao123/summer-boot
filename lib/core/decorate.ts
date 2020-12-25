@@ -1,5 +1,7 @@
 import "reflect-metadata";
 
+const Path2Regexp = require("path-to-regexp");
+
 export enum MetaKey {
     CONTROLLER = "CONTROLLER",
     METHOD = "METHOD",
@@ -11,6 +13,7 @@ export enum MetaKey {
     SERVICE = "SERVICE",
     INJECT = "INJECT",
     COMPONENT = "COMPONENT",
+    INTERCEPTOR = "INTERCEPTOR",
 }
 
 export enum RequestMethod {
@@ -129,5 +132,15 @@ export function Autowrite() {
     return function (target: Object, name: string) {
         target[name] = null;
         Reflect.defineMetadata(MetaKey.INJECT, { target, name }, target, name);
+    }
+}
+
+/**
+ * 拦截器
+ * @param path 拦截器的拦截地址 不传 拦截全部
+ */
+export function Interceptor(path?: string) {
+    return function (target: Constructor) {
+        Reflect.defineMetadata(MetaKey.INTERCEPTOR, { rules: path ? Path2Regexp.pathToRegexp(path) : null }, target);
     }
 }

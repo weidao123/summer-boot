@@ -6,16 +6,22 @@ interface Component {
     func: Function;
 }
 
-// 控制器，不可被注入
+// 控制器
 interface Controller extends Component {
     method?: RequestMethod;
     rules?: RegExp | undefined;
     params?: object | undefined;
 }
 
+// Interceptor
+interface Interceptor extends Component {
+    rules: RegExp | null;
+}
+
 class ContainerMap {
     public controller: Map<string, Controller> = new Map<string, Controller>();
     public component: Component[] = [];
+    public interceptor: Interceptor[] = [];
 
     public getAllValues() {
         const values = [...this.component];
@@ -104,6 +110,22 @@ class Container {
             }
         });
         return res;
+    }
+
+    // 获取拦截器
+    public getInterceptor(path: string): Interceptor[] {
+        const res = [];
+        for (const interceptor of this.container.interceptor) {
+            if (!interceptor.rules || interceptor.rules.test(path)) {
+                res.push(interceptor);
+            }
+        }
+        return res;
+    }
+
+    // 获取拦截器
+    public addInterceptor(inter: Interceptor): void {
+        this.container.interceptor.push(inter);
     }
 }
 

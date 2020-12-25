@@ -1,12 +1,10 @@
 #!/usr/bin/env ts-node
 
 import Logger from "../util/logger";
-import {Application} from "../index";
-import {isAgent, WorkerType} from "./worker-type";
+import {Application, Config} from "../index";
+import {sendMessage, WorkerMessage, WorkerStatus, isAgent, Worker} from "./worker";
 
 const cluster = require("cluster");
-const os = require("os");
-const net = require("net");
 
 /**
  * App启动程序
@@ -15,24 +13,41 @@ function bootstrap() {
     const app = new Application();
     app.listen();
 }
-bootstrap();
-// if (cluster.isMaster) {
-//     const worker = cluster.fork({ NODE_WORK_TYPE: WorkerType.AGENT });
-//     worker.on("message", function (msg) {
-//         const count = os.cpus().length;
-//         for (let i = 0; i < count; i++) {
-//             cluster.fork();
-//         }
-//         cluster.on("exit", (worker, code, signal) => {
-//             Logger.error(`Worker pid=${worker.process.pid} exit, code ${code}, signal ${signal}`);
-//             cluster.fork({ NODE_WORK_TYPE: WorkerType.WORKER });
-//         })
-//     })
-// } else {
-//     Logger.info(`Worker ${process.pid} started`);
-//     bootstrap();
-// }
-//
-// if (isAgent()) {
-//     process.send("hello master");
-// }
+if (cluster.isMaster) {
+    const conf = Config.getConfig();
+    const agent = cluster.fork({ NODE_WORK_TYPE: Worker.AGENT });
+
+    agent.once("message", function (msg: WorkerMessage) {
+        if (msg.type === WorkerStatus.AGENT_START_SUCCESS) {
+            Logger.info(`Agent start success`);
+            let successCount = 0;
+            const workers = [];
+            for (let i = 0; i < conf.worker; i++) {
+                const worker = cluster.fork();
+                workers.push(worker);
+                worker.once("message", function (data: WorkerMessage) {
+                    if (data.type === WorkerStatus.START_SUCCESS) {
+                        successCount++;
+                        if (successCount === conf.worker) {
+                            const pids = workers.map((item) => item.process.pid);
+                            Logger.info(`Workers: [${pids}]`);
+                            Logger.info(`Master: [${process.pid}]`);
+                            Logger.info("Application running hare http://127.0.0.1:" + conf.port);
+                        }
+                    }
+                })
+            }
+        }
+    });
+    cluster.on("exit", (worker, code, signal) => {
+        Logger.error(`Worker pid=${worker.process.pid} exit, code ${code}, signal ${signal}`);
+        cluster.fork({ NODE_WORK_TYPE: Worker.WORKER });
+    })
+} else {
+    bootstrap();
+}
+
+if (isAgent()) {
+    sendMessage(WorkerStatus.AGENT_START_SUCCESS);
+    // agent进程。。。。
+}
