@@ -13,15 +13,16 @@ function bootstrap() {
     const app = new Application();
     app.listen();
 }
+
 if (cluster.isMaster) {
     const conf = Config.getConfig();
     const agent = cluster.fork({ NODE_WORK_TYPE: Worker.AGENT });
+    const workers = [];
+    let successCount = 0;
 
     agent.once("message", function (msg: WorkerMessage) {
         if (msg.type === WorkerStatus.AGENT_START_SUCCESS) {
-            Logger.info(`Agent start success`);
-            let successCount = 0;
-            const workers = [];
+            Logger.info(`Agent start`);
             for (let i = 0; i < conf.worker; i++) {
                 const worker = cluster.fork();
                 workers.push(worker);
@@ -35,13 +36,17 @@ if (cluster.isMaster) {
                             Logger.info("Application running hare http://127.0.0.1:" + conf.port);
                         }
                     }
-                })
+                });
             }
         }
     });
     cluster.on("exit", (worker, code, signal) => {
-        Logger.error(`Worker pid=${worker.process.pid} exit, code ${code}, signal ${signal}`);
-        cluster.fork({ NODE_WORK_TYPE: Worker.WORKER });
+        if (successCount === conf.worker) {
+            Logger.error(`Worker pid=${worker.process.pid} exit, code ${code}, signal ${signal}`);
+            cluster.fork({ NODE_WORK_TYPE: Worker.WORKER });
+        } else {
+            Logger.error(`Application run fail`);
+        }
     })
 } else {
     bootstrap();

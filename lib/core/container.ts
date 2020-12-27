@@ -27,7 +27,7 @@ class ContainerMap {
     public handler: Handler[] = [];
 
     public getAllValues() {
-        const values = [...this.component];
+        const values = [...this.component, ...this.handler];
         const con = this.controller.values();
         let next = con.next();
         while (!next.done) {
