@@ -1,9 +1,14 @@
 {
   "name": "summer-boot",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "main": "./dist/index.js",
   "typings": "./dist/typing/index.d.ts",
   "description": "mvc to node",
+  "private": false,
+  "homepage": "https://github.com/weidao123/summer-boot",
+  "repository": {
+    "url": "https://github.com/weidao123/summer-boot"
+  },
   "author": {
     "email": "2209697714@qq.com",
     "name": "weidao"
