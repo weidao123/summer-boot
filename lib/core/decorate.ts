@@ -51,10 +51,51 @@ export function Controller(options: ControllerOptions = {}) {
  * 方法装饰器
  * @constructor
  */
-export function RequestMapping(options: MethodOptions) {
-    options.method = options.method || RequestMethod.GET;
+export function RequestMapping(o: MethodOptions | string) {
+    const op: MethodOptions = {method: RequestMethod.GET, path: ""};
+    if (typeof o === "string") {
+        op.path = o;
+    } else {
+        op.path = o.path;
+        op.method = o.method || RequestMethod.GET;
+    }
     return function (target: Object, name: string, desc: any) {
-        Reflect.defineMetadata(MetaKey.METHOD, options, target[name]);
+        Reflect.defineMetadata(MetaKey.METHOD, op, target[name]);
+    }
+}
+
+export function Get(path: string) {
+    const op: MethodOptions = {method: RequestMethod.GET, path: path};
+    return function (target: Object, name: string, desc: any) {
+        Reflect.defineMetadata(MetaKey.METHOD, op, target[name]);
+    }
+}
+
+export function Post(path: string) {
+    const op: MethodOptions = {method: RequestMethod.POST, path: path};
+    return function (target: Object, name: string, desc: any) {
+        Reflect.defineMetadata(MetaKey.METHOD, op, target[name]);
+    }
+}
+
+export function Delete(path: string) {
+    const op: MethodOptions = {method: RequestMethod.DELETE, path: path};
+    return function (target: Object, name: string, desc: any) {
+        Reflect.defineMetadata(MetaKey.METHOD, op, target[name]);
+    }
+}
+
+export function Put(path: string) {
+    const op: MethodOptions = {method: RequestMethod.PUT, path: path};
+    return function (target: Object, name: string, desc: any) {
+        Reflect.defineMetadata(MetaKey.METHOD, op, target[name]);
+    }
+}
+
+export function Patch(path: string) {
+    const op: MethodOptions = {method: RequestMethod.PATCH, path: path};
+    return function (target: Object, name: string, desc: any) {
+        Reflect.defineMetadata(MetaKey.METHOD, op, target[name]);
     }
 }
 
