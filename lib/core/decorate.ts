@@ -170,10 +170,10 @@ export function Component() {
  * 注入服务
  * @constructor
  */
-export function Autowrite() {
+export function Autowrite(n?: string) {
     return function (target: Object, name: string) {
         target[name] = null;
-        Reflect.defineMetadata(MetaKey.INJECT, { target, name }, target, name);
+        Reflect.defineMetadata(MetaKey.INJECT, { target, name: n || name }, target, name);
     }
 }
 

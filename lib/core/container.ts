@@ -21,13 +21,23 @@ interface Handler extends Component {
 
 type HandlerType = MetaKey.INTERCEPTOR_HANDLER | MetaKey.ERROR_HANDLER;
 
+/**
+ * IOC 容器的储存结构
+ */
 class ContainerMap {
-    public controller: Map<string, Controller> = new Map<string, Controller>();
-    public component: Component[] = [];
-    public handler: Handler[] = [];
 
+    // 路由映射容器
+    public controller: Map<string, Controller> = new Map<string, Controller>();
+
+    // 可被注入的组件
+    public component: Set<Component> = new Set<Component>();
+
+    // 处理器 例如：请求/响应拦截器 全局异常处理器
+    public handler: Set<Handler> = new Set<Handler>();
+
+    // 获取所有value
     public getAllValues() {
-        const values = [...this.component, ...this.handler];
+        const values = [...Array.from(this.component), ...Array.from(this.handler)];
         const con = this.controller.values();
         let next = con.next();
         while (!next.done) {
@@ -86,7 +96,7 @@ class Container {
 
     // 添加service
     public addService(com: Component) {
-        this.container.component.push(com);
+        this.container.component.add(com);
     }
 
     // 获取service
@@ -118,7 +128,8 @@ class Container {
     // 获取拦截器
     public getInterceptor(path: string): Handler[] {
         const res = [];
-        const handlers = this.container.handler.filter(item => item.type === MetaKey.INTERCEPTOR_HANDLER);
+        const handler = Array.from(this.container.handler);
+        const handlers = handler.filter(item => item.type === MetaKey.INTERCEPTOR_HANDLER);
         for (const interceptor of handlers) {
             if (!interceptor.rules || interceptor.rules.test(path)) {
                 res.push(interceptor);
@@ -129,12 +140,13 @@ class Container {
 
     // 获取全局异常拦截器
     public getErrorHandler() {
-        return this.container.handler.filter(item => item.type === MetaKey.ERROR_HANDLER);
+        const handler = Array.from(this.container.handler);
+        return handler.filter(item => item.type === MetaKey.ERROR_HANDLER);
     }
 
     // 添加handler
     public addInterceptor(inter: Handler): void {
-        this.container.handler.push(inter);
+        this.container.handler.add(inter);
     }
 }
 

@@ -74,10 +74,11 @@ export default class ParserDecorate {
                     if (type && type !== Object) {
                         server = Container.getByType(type);
                     } else {
-                        server = Container.getByName(name);
+                        const metadata = Reflect.getMetadata(MetaKey.INJECT, target, name);
+                        server = Container.getByName(metadata.name);
                     }
                     if (!server) {
-                        Logger.error(`inject fail: ${name}, not find server`);
+                        Logger.error(`inject fail: ${name}, not find in container`);
                     } else {
                         target[name] = server;
                     }

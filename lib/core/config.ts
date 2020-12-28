@@ -2,7 +2,7 @@ import {Request, Response, NextFunction, Application} from "express";
 
 const path = require("path");
 const fs = require("fs");
-const worker = require("os").cpus().length;
+
 
 export interface ExceptionHandler {
     exception(req: Request, res: Response, e: Error);
@@ -40,7 +40,7 @@ export class Config {
     }
 
     public port?: number = 8080;
-    public worker?: number = worker;
+    public worker?: number = 1;
 
     // 所有的目录都是相对于项目根目录
     public baseDir?: string = "app";
