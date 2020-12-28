@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import {ScheduleRule} from "../runtime/agent/schedule";
 
 const Path2Regexp = require("path-to-regexp");
 
@@ -10,11 +11,11 @@ export enum MetaKey {
     RESPONSE = "RESPONSE",
     QUERY = "QUERY",
     BODY = "BODY",
-    SERVICE = "SERVICE",
     INJECT = "INJECT",
     COMPONENT = "COMPONENT",
     INTERCEPTOR_HANDLER = "INTERCEPTOR_HANDLER",
     ERROR_HANDLER = "ERROR_HANDLER",
+    SCHEDULE = "SCHEDULE",
 }
 
 export enum RequestMethod {
@@ -36,6 +37,10 @@ export interface MethodOptions {
 }
 
 export type Constructor = { new (...args) }
+
+function defineComponent(target: Constructor) {
+    Reflect.defineMetadata(MetaKey.COMPONENT, {}, target);
+}
 
 /**
  * 控制器
@@ -152,7 +157,7 @@ export function Body(target: Object, name: string, index: number) {
  */
 export function Service() {
     return function (target: Constructor) {
-        Reflect.defineMetadata(MetaKey.SERVICE, {}, target);
+        defineComponent(target);
     }
 }
 
@@ -162,7 +167,7 @@ export function Service() {
  */
 export function Component() {
     return function (target: Constructor) {
-        Reflect.defineMetadata(MetaKey.COMPONENT, {}, target);
+        defineComponent(target);
     }
 }
 
@@ -203,5 +208,21 @@ export function ErrorHandler() {
                 type: MetaKey.ERROR_HANDLER,
             },
             target);
+    }
+}
+
+/**
+ * 注册定时任务
+ * @constructor
+ */
+export function Schedule(rule: ScheduleRule) {
+    return function (target: Constructor) {
+        Reflect.defineMetadata(MetaKey.SCHEDULE,
+            {
+                rule: rule,
+                type: MetaKey.SCHEDULE,
+            },
+            target);
+        defineComponent(target);
     }
 }

@@ -3,6 +3,7 @@ import Logger from "./util/logger";
 
 export * from "./core/decorate";
 export * from "./config/config";
+export * from "./runtime/agent";
 
 export { render } from "./ssr";
 

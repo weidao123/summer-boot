@@ -2,7 +2,8 @@
 
 import Logger from "../util/logger";
 import {Application, Config} from "../index";
-import {sendMessage, WorkerMessage, WorkerStatus, isAgent, Worker} from "./worker";
+import {isAgent, Worker, WorkerMessage, WorkerStatus} from "./worker";
+import {initAgent} from "./agent";
 
 const cluster = require("cluster");
 
@@ -20,9 +21,16 @@ if (cluster.isMaster) {
     const workers = [];
     let successCount = 0;
 
+    agent.on("message", function (msg: WorkerMessage) {
+        if (msg.type === WorkerStatus.START_FAIL) {
+            Logger.error("Agent start fail");
+            Logger.error(msg.data);
+            process.exit(1);
+        }
+    });
     agent.once("message", function (msg: WorkerMessage) {
         if (msg.type === WorkerStatus.AGENT_START_SUCCESS) {
-            Logger.info(`Agent start`);
+            Logger.info(`Agent start pid ${agent.process.pid}`);
             for (let i = 0; i < conf.worker; i++) {
                 const worker = cluster.fork();
                 workers.push(worker);
@@ -47,12 +55,11 @@ if (cluster.isMaster) {
         } else {
             Logger.error(`Application run fail`);
         }
-    })
+    });
 } else {
     bootstrap();
 }
 
 if (isAgent()) {
-    sendMessage(WorkerStatus.AGENT_START_SUCCESS);
-    // agent进程做点啥。。。。
+    initAgent();
 }

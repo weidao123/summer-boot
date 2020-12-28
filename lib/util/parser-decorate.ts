@@ -20,7 +20,6 @@ export default class ParserDecorate {
             const fun = next.value[1];
             if (typeof fun === "function") {
                 const controller = Reflect.hasMetadata(MetaKey.CONTROLLER, fun);
-                const service = Reflect.hasMetadata(MetaKey.SERVICE, fun);
                 const component = Reflect.hasMetadata(MetaKey.COMPONENT, fun);
                 const interceptor = Reflect.hasMetadata(MetaKey.INTERCEPTOR_HANDLER, fun);
                 const errorHandler = Reflect.hasMetadata(MetaKey.ERROR_HANDLER, fun);
@@ -28,7 +27,7 @@ export default class ParserDecorate {
                     this.parseController(fun);
                 }
 
-                if (service || component) {
+                if (component) {
                     this.parseService(fun);
                 }
 

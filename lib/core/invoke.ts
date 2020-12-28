@@ -3,7 +3,7 @@ import Container from "./container";
 import {Request, Response, NextFunction} from "express";
 import {MetaKey, RequestMethod} from "./decorate";
 import Logger from "../util/logger";
-import {ExceptionHandler, InterceptorHandler} from "../config/config";
+import {ExceptionHandler, InterceptorHandler} from "..";
 
 /**
  * 调用实际的接口方法
