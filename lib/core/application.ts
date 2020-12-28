@@ -1,7 +1,7 @@
 import Loader from "../util/loader";
 import ParserDecorate from "../util/parser-decorate";
 import {invoke} from "./invoke";
-import {Config, StarterHandler} from "./config";
+import {Config, StarterHandler} from "../config/config";
 import {sendMessage, WorkerStatus} from "../runtime/worker";
 
 const bodyParser = require("body-parser");

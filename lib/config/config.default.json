@@ -1,0 +1,15 @@
+{
+  "port": 8080,
+  "worker": 1,
+  "baseDir": "app",
+  "log": {
+    "dir": "logs",
+    "name": "summer-boot-web.log"
+  },
+  "ssr": {
+    "output": "dist",
+    "template": "index.html"
+  },
+  "staticDir": "public",
+  "starterHandlerFile": "app/application"
+}

@@ -1,14 +1,14 @@
-import {Config} from "../core/config";
+import {Config} from "../config/config";
 
 const Console = require("console").Console;
 const fs = require("fs");
 const path = require("path");
 
-const {logDir} = Config.getConfig();
-const logPath = path.resolve(process.cwd(), logDir, "web.log");
+const {log} = Config.getConfig();
+const logPath = path.resolve(process.cwd(), log.dir, log.name);
 
-if (!fs.existsSync(logDir)) {
-    fs.mkdirSync(logDir);
+if (!fs.existsSync(log.dir)) {
+    fs.mkdirSync(log.dir);
 }
 
 const options = {

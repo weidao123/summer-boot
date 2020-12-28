@@ -38,19 +38,18 @@ function getServerBundle(ServerConf, callback?) {
 }
 
 async function getClientBundle() {
-    const config = Config.getConfig();
+    const {ssr, port} = Config.getConfig();
     if (!dev) {
-        const output = path.resolve(process.cwd(), config.clientOutputDir, "vue-ssr-client-manifest.json");
+        const output = path.resolve(process.cwd(), ssr.output, "vue-ssr-client-manifest.json");
         return require(output);
     }
-    const port = config.port;
     const { data } = await axios.get(`http://localhost:${port}/vue-ssr-client-manifest.json`);
     return data;
 }
 
 export async function render(req: Request, serverConf) {
-    const config = Config.getConfig();
-    const templatePath = path.resolve(process.cwd(), config.ssrTemplate);
+    const {ssr} = Config.getConfig();
+    const templatePath = path.resolve(process.cwd(), ssr.template);
     const template = fs.readFileSync(templatePath, "utf-8");
     const serverBundle = await getServerBundle(serverConf);
     const clientBundle = await getClientBundle();
