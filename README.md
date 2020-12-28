@@ -1,10 +1,27 @@
-### summer-boot
+## summer-boot
 
 一款类基于DI(依赖注入)和IOC(控制反转)的NodeJS框架，模块间高内聚低耦合
 
 并集成了vue-ssr只需要少量的配置即可开启vue的ssr渲染，Demo可参考下面连接
 
 [vue-ssr-template](https://github.com/weidao123/vue-ssr-template)
+
+### 安装
+
+```javascript
+yarn add summer-boot
+```
+
+```json
+// package.json 在script启动脚本添加命令
+{
+    "script": {
+        "satrt": "summer-boot"
+    }
+}
+```
+
+
 
 ### 说明
 
@@ -15,9 +32,7 @@
 
 #### 装饰器
 
-* [x] 
-
-* [x] Service (服务，可被Autowrite注入)
+* [x] Service (装饰一个服务，可被Autowrite注入)
 * [x] ErrorHandler (全局异常处理器)
 * [x] Component (组件，可被Autowrite注入)
 * [x] Autowrite (注入组件)
@@ -29,4 +44,130 @@
 * [x] Query (注入接收到的query参数)
 * [x] Body (注入接收到的body参数)
 * [x] PathVariable (注入url上的参数)
+* [x] Get、Post、Put、Delete、Patch
 
+### Example
+
+* */app/controller/user.ts*
+
+```typescript
+import {
+    Autowrite, Body,
+    Controller,
+    Delete,
+    Get,
+    Patch,
+    PathVariable,
+    Post,
+    Put, Query,
+    Req,
+    RequestMapping,
+    RequestMethod
+} from "summer-boot";
+import BaseService from "../service/BaseService";
+import {Request} from "express";
+
+@Controller({path: "/user"})
+export default class UserController {
+
+    // 可以通过名称、或者类型注入
+    @Autowrite()
+    private baseService: BaseService;
+
+    @Get("/test2/:id")
+    public test2(@PathVariable("id") id: string) {
+        return { id };
+    }
+
+    @Get("/test1")
+    public test1(@Req req: Request) {
+        return {
+            data: this.baseService.getPath(),
+            ip: req.ip,
+        };
+    }
+
+    @RequestMapping({ path: "/postmapping", method: RequestMethod.POST })
+    public postMapping(@Body body) {
+        return {
+            data: body
+        };
+    }
+
+    @RequestMapping("/getmapping")
+    public getMapping(@Query query) {
+        return {
+            data: query
+        };
+    }
+
+    @Get("/get")
+    public get() {
+        return "get";
+    }
+
+    @Post("/post")
+    public post() {
+        return "post";
+    }
+
+    @Put("/put")
+    public put() {
+        return "put";
+    }
+
+    @Patch("/patch")
+    public patch() {
+        return "patch";
+    }
+
+    @Delete("/delete")
+    public del() {
+        return "delete";
+    }
+}
+
+```
+
+* */app/interceptor/login-interceptor.ts*
+
+```typescript
+import {Autowrite, Interceptor, InterceptorHandler} from "summer-boot";
+import {Request, Response} from "express";
+import BaseService from "../service/BaseService";
+
+// 拦截器： 拦截/front/* 的所有请求
+// 不传参数代表拦截所有
+@Interceptor('/front/(.*)')
+export default class LoginInterceptor implements InterceptorHandler {
+
+    @Autowrite()
+    private baseService: BaseService;
+
+    // 响应前处理
+    after(req: Request, res: Response, data: any): Object {
+        console.log(this.baseService.getPath());
+        return {"state": 200, msg: "success", data: data};
+    }
+
+    // 前置拦截
+    before(req: Request, res: Response): boolean {
+        return true;
+    }
+}
+```
+
+* */app/interceptor/global-exception.ts*
+
+```typescript
+import {ErrorHandler, ExceptionHandler} from "summer-boot";
+
+// 全局异常处理
+@ErrorHandler()
+export default class GlobalErrorHandler implements ExceptionHandler {
+    // 统一返回异常信息
+    public exception(req, res, e) {
+        res.send("global exception handler -->" + e);
+    }
+}
+```
