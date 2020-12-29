@@ -67,6 +67,7 @@ export async function invoke(req: Request, res: Response, next: NextFunction) {
     } catch (e) {
         Logger.error(req.url);
         Logger.error(e);
+        console.log(process.pid);
         const errorHandler = Container.getErrorHandler();
         if (errorHandler.length !== 0) {
             errorHandler.forEach(item => {

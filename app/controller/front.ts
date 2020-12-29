@@ -8,6 +8,6 @@ export default class FrontController {
 
     @RequestMapping({path: "/name"})
     public name() {
-        return "front-" + this.randomInt.get();
+        return "front-" + this.randomInt.get() + "pid=" + process.pid;
     }
 }

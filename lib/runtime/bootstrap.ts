@@ -6,13 +6,14 @@ import {isAgent, Worker, WorkerMessage, WorkerStatus} from "./worker";
 import {initAgent} from "./agent";
 
 const cluster = require("cluster");
-
 /**
  * App启动程序
  */
 function bootstrap() {
     const app = new Application();
-    app.listen();
+    if (!isAgent()) {
+        app.listen();
+    }
 }
 
 if (cluster.isMaster) {
@@ -21,7 +22,7 @@ if (cluster.isMaster) {
     const workers = [];
     let successCount = 0;
 
-    agent.on("message", function (msg: WorkerMessage) {
+    agent.once("message", function (msg: WorkerMessage) {
         if (msg.type === WorkerStatus.START_FAIL) {
             Logger.error("Agent start fail");
             Logger.error(msg.data);
@@ -51,7 +52,8 @@ if (cluster.isMaster) {
     cluster.on("exit", (worker, code, signal) => {
         if (successCount === conf.worker) {
             Logger.error(`Worker pid=${worker.process.pid} exit, code ${code}, signal ${signal}`);
-            cluster.fork({ NODE_WORK_TYPE: Worker.WORKER });
+            const w = cluster.fork({ NODE_WORK_TYPE: Worker.WORKER });
+            Logger.info("fork worker pid " + w.process.pid);
         } else {
             Logger.error(`Application run fail`);
         }
