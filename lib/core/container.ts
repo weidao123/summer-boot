@@ -54,14 +54,14 @@ class ContainerMap {
 class Container {
     private readonly container: ContainerMap = new ContainerMap();
 
-    // 添加controller
+    // 添加controller key ==> method:url
     public add (k: string, v: Controller) {
         this.container.controller.set(k, v);
     }
 
     // 获取controller
     public get (k: string, method: RequestMethod): Controller {
-        const value = this.container.controller.get(k);
+        const value = this.container.controller.get(`${method}:${k}`);
         if (value && value.method === method) {
             return value;
         }

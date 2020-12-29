@@ -15,7 +15,7 @@ export enum WorkerStatus {
     EXIT
 }
 
-export interface WorkerMessage<T = any> {
+export interface WorkerMessagePayload<T = any> {
     data: T;
     type: WorkerStatus
 }

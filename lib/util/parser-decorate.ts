@@ -125,7 +125,8 @@ export default class ParserDecorate {
                         params[item.name] = maps.indexOf(item.name);
                     }
                 });
-                Container.add(url, {
+                // key => POST:/user/login
+                Container.add(`${methodOpt.method}:${url}`, {
                     instance: target,
                     func: target[value],
                     method: methodOpt.method,

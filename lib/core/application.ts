@@ -54,7 +54,7 @@ export default class Application {
             if (this.starterHandler)
             this.starterHandler.after && this.starterHandler.after(app);
             // 通知主进程 启动成功
-            sendMessage(WorkerStatus.START_SUCCESS);
+            sendMessage(WorkerStatus.START_SUCCESS, process.pid);
         });
     }
 

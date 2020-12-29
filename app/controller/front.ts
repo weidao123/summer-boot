@@ -1,4 +1,4 @@
-import {Autowrite, Controller, RequestMapping} from "../../lib";
+import {Autowrite, Controller, Post, RequestMapping} from "../../lib";
 
 @Controller({path: "/front"})
 export default class FrontController {
@@ -9,5 +9,12 @@ export default class FrontController {
     @RequestMapping({path: "/name"})
     public name() {
         return "front-" + this.randomInt.get() + "pid=" + process.pid;
+    }
+
+    @Post("/name")
+    public pname() {
+        return {
+            pid: process.pid
+        };
     }
 }

@@ -65,16 +65,14 @@ export async function invoke(req: Request, res: Response, next: NextFunction) {
         }
         res.send(response);
     } catch (e) {
-        Logger.error(req.url);
-        Logger.error(e);
-        console.log(process.pid);
+        Logger.error(e + " " + req.url);
         const errorHandler = Container.getErrorHandler();
         if (errorHandler.length !== 0) {
             errorHandler.forEach(item => {
                 (item.instance as ExceptionHandler).exception(req, res, e);
             });
         } else {
-            res.send(e);
+            res.send(e.message);
         }
     }
 }
