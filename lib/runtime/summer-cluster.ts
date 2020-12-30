@@ -24,32 +24,59 @@ export default class SummerCluster {
 
         WorkerMessage.once(this.agent, WorkerStatus.AGENT_START_SUCCESS, this.forkWorker.bind(this));
         WorkerMessage.once(this.agent, WorkerStatus.START_FAIL, this.onAgentStartFail.bind(this));
+        this.agent.on("exit", this.onAgentExit.bind(this))
     }
 
+    /**
+     * 监听agent启动失败
+     * @param data
+     */
     private onAgentStartFail(data: WorkerMessagePayload) {
-        Logger.error("Agent start fail " + data.data);
         process.exit(1);
     }
 
+    /**
+     * 监听agent exit
+     */
+    private onAgentExit(code, signal) {
+        Logger.error(`Agent exit code ${code} signal ${signal}`);
+        process.exit(1);
+    }
+
+    /**
+     * fork 子进程
+     * @param data
+     */
     private forkWorker(data: WorkerMessagePayload) {
-        Logger.info(`Agent start pid ${this.agent.process.pid}`);
         for (let i = 0; i < this.conf.worker; i++) {
             const worker = cluster.fork();
             this.workers.push(worker);
+            worker.on('exit', (code, signal) => this.onWorkerExit(worker, code, signal));
             WorkerMessage.once(worker, WorkerStatus.START_SUCCESS, this.onWorkerStart.bind(this));
         }
-        cluster.on("exit", this.onWorkerExit);
     }
 
+    /**
+     * 监听子进程启动
+     * @param data
+     */
     private onWorkerStart(data: WorkerMessagePayload<number>) {
         this.count++;
         Logger.info(`Worker start ${data.data}`);
-        if (this.count === this.conf.worker && !this.isStart) {
-            this.isStart = true;
-            Logger.info("Application running hare http://127.0.0.1:" + this.conf.port);
+        if (this.count === this.conf.worker) {
+            if (!this.isStart) {
+                this.isStart = true;
+                Logger.info("Application running hare http://127.0.0.1:" + this.conf.port);
+            }
         }
     }
 
+    /**
+     * 监听子进程exit、并启动新的子进程
+     * @param worker
+     * @param code
+     * @param signal
+     */
     private onWorkerExit(worker: ClusterWorker, code: number, signal: string) {
         if (this.isStart) {
             const index = this.workers.findIndex(w => w.process.pid === worker.process.pid);
@@ -59,14 +86,9 @@ export default class SummerCluster {
             this.workers.push(w);
             WorkerMessage.on(w, WorkerStatus.START_SUCCESS, this.onWorkerStart.bind(this));
 
-            Logger.warning(`Worker pid=${worker.process.pid} exit, code ${code}, signal ${signal}`);
-            Logger.info("fork worker pid " + w.process.pid);
+            Logger.error(`Worker pid=${worker.process.pid} exit, code ${code}, signal ${signal}`);
         } else {
-            Logger.error(`worker start fail pid ${worker.process.pid}`);
+            Logger.error(`worker exit pid ${worker.process.pid}`);
         }
     }
-
-    private onMasterSignal() {}
-
-    private onAgentExit() {}
 }

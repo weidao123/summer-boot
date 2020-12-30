@@ -13,9 +13,7 @@ if (cluster.isMaster) {
     const app = new Application();
     if (!isAgent()) {
         app.listen();
+    } else {
+        initAgent();
     }
-}
-
-if (isAgent()) {
-    initAgent();
 }
