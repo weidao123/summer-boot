@@ -3,51 +3,49 @@ import {Worker as ClusterWorker} from "cluster";
 import {WorkerMessage} from "../util/worker-message";
 import {Config} from "..";
 import Logger from "../util/logger";
+import SummerWorker from "./summer-worker";
 
 const cluster = require("cluster");
+const pkg = require("../../package.json");
 
 /**
  * 集群模式启动
  */
 export default class SummerCluster {
 
-    private readonly agent: ClusterWorker;
     private readonly workers: ClusterWorker[] = [];
     private readonly conf: any;
+    private agent: SummerWorker;
+
     private count: number = 0;
     private isStart = false;
 
     constructor() {
+        Logger.info(`node version ${process.version} summer-boot version ${pkg.version}`);
+        Logger.info(`master started ${process.pid}`);
         this.conf = Config.getConfig();
-        this.agent = cluster.fork({ NODE_WORK_TYPE: Worker.AGENT });
-        Logger.info(`Master start ${process.pid}`);
+        this.agent = new SummerWorker({ NODE_WORK_TYPE: Worker.AGENT });
 
-        WorkerMessage.once(this.agent, WorkerStatus.AGENT_START_SUCCESS, this.forkWorker.bind(this));
-        WorkerMessage.once(this.agent, WorkerStatus.START_FAIL, this.onAgentStartFail.bind(this));
-        this.agent.on("exit", this.onAgentExit.bind(this))
-    }
+        this.agent.on(SummerWorker.WORKER_STARTED, (worker) => {
+            this.forkWorker();
+            Logger.info(`agent started ${worker.process.pid}`);
+        });
 
-    /**
-     * 监听agent启动失败
-     * @param data
-     */
-    private onAgentStartFail(data: WorkerMessagePayload) {
-        process.exit(1);
-    }
+        this.agent.on(SummerWorker.WORKER_STARTED_FAIL, ({worker, msg}) => {
+            Logger.error(`agent started error ${msg}`);
+            process.exit();
+        });
 
-    /**
-     * 监听agent exit
-     */
-    private onAgentExit(code, signal) {
-        Logger.error(`Agent exit code ${code} signal ${signal}`);
-        process.exit(1);
+        this.agent.on(SummerWorker.WORKER_EXIT, (worker) => {
+            Logger.error(`agent exit ${worker.process.pid}`);
+            process.exit();
+        });
     }
 
     /**
      * fork 子进程
-     * @param data
      */
-    private forkWorker(data: WorkerMessagePayload) {
+    private forkWorker() {
         for (let i = 0; i < this.conf.worker; i++) {
             const worker = cluster.fork();
             this.workers.push(worker);
@@ -62,11 +60,11 @@ export default class SummerCluster {
      */
     private onWorkerStart(data: WorkerMessagePayload<number>) {
         this.count++;
-        Logger.info(`Worker start ${data.data}`);
         if (this.count === this.conf.worker) {
             if (!this.isStart) {
                 this.isStart = true;
-                Logger.info("Application running hare http://127.0.0.1:" + this.conf.port);
+                Logger.info(`workers started ${this.workers.map(w => w.process.pid)}`);
+                Logger.info("application running hare http://127.0.0.1:" + this.conf.port);
             }
         }
     }

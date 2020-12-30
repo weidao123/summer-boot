@@ -5,10 +5,8 @@ import Logger from "../../util/logger";
 export function initAgent() {
     try {
         loadSchedule();
-        sendMessage(WorkerStatus.AGENT_START_SUCCESS);
-        Logger.info(`Agent start pid ${process.pid}`);
+        sendMessage(WorkerStatus.START_SUCCESS);
     } catch (e) {
-        Logger.error("Agent start fail " + e.message);
         sendMessage(WorkerStatus.START_FAIL, e.message);
     }
 }

@@ -8,7 +8,6 @@ export function isAgent() {
 }
 
 export enum WorkerStatus {
-    AGENT_START_SUCCESS,
     START_SUCCESS,
     START_FAIL,
     ERROR,
