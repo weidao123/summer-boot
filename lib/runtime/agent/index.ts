@@ -1,13 +1,13 @@
-import {sendMessage, WorkerStatus} from "../worker";
+import {sendMessage, WorkerMessageType} from "../worker";
 import {loadSchedule} from "./schedule";
 import Logger from "../../util/logger";
 
 export function initAgent() {
     try {
         loadSchedule();
-        sendMessage(WorkerStatus.START_SUCCESS);
+        sendMessage(WorkerMessageType.START_SUCCESS);
     } catch (e) {
-        sendMessage(WorkerStatus.START_FAIL, e.message);
+        sendMessage(WorkerMessageType.START_FAIL, e.message);
     }
 }
 

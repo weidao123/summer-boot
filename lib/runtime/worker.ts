@@ -1,13 +1,13 @@
-export enum Worker {
+export enum WorkerType {
     AGENT = "AGENT",
     WORKER = "WORKER",
 }
 
 export function isAgent() {
-    return process.env.NODE_WORK_TYPE === Worker.AGENT;
+    return process.env.SUMMER_WORKER_TYPE === WorkerType.AGENT;
 }
 
-export enum WorkerStatus {
+export enum WorkerMessageType {
     START_SUCCESS,
     START_FAIL,
     ERROR,
@@ -16,9 +16,9 @@ export enum WorkerStatus {
 
 export interface WorkerMessagePayload<T = any> {
     data: T;
-    type: WorkerStatus
+    type: WorkerMessageType
 }
 
-export function sendMessage(type: WorkerStatus, data = null) {
+export function sendMessage(type: WorkerMessageType, data = null) {
     process.send({ data, type });
 }

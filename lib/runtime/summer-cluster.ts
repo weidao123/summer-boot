@@ -1,11 +1,9 @@
-import {Worker, WorkerMessagePayload, WorkerStatus} from "./worker";
-import {Worker as ClusterWorker} from "cluster";
-import {WorkerMessage} from "../util/worker-message";
+import {WorkerType, WorkerMessagePayload, WorkerMessageType} from "./worker";
+import {Worker} from "cluster";
 import {Config} from "..";
 import Logger from "../util/logger";
 import SummerWorker from "./summer-worker";
 
-const cluster = require("cluster");
 const pkg = require("../../package.json");
 
 /**
@@ -13,7 +11,7 @@ const pkg = require("../../package.json");
  */
 export default class SummerCluster {
 
-    private readonly workers: ClusterWorker[] = [];
+    private readonly workers: SummerWorker[] = [];
     private readonly conf: any;
     private agent: SummerWorker;
 
@@ -21,23 +19,22 @@ export default class SummerCluster {
     private isStart = false;
 
     constructor() {
-        Logger.info(`node version ${process.version} summer-boot version ${pkg.version}`);
-        Logger.info(`master started ${process.pid}`);
+        Logger.info(`[master] node version ${process.version} summer-boot version ${pkg.version}`);
         this.conf = Config.getConfig();
-        this.agent = new SummerWorker({ NODE_WORK_TYPE: Worker.AGENT });
+        this.agent = new SummerWorker({ type: WorkerType.AGENT });
 
-        this.agent.on(SummerWorker.WORKER_STARTED, (worker) => {
+        this.agent.on(WorkerMessageType.START_SUCCESS, () => {
             this.forkWorker();
-            Logger.info(`agent started ${worker.process.pid}`);
+            Logger.info(`agent started`);
         });
 
-        this.agent.on(SummerWorker.WORKER_STARTED_FAIL, ({worker, msg}) => {
-            Logger.error(`agent started error ${msg}`);
+        this.agent.on(WorkerMessageType.START_FAIL, (data) => {
+            Logger.error(`agent started error ${data.data}`);
             process.exit();
         });
 
-        this.agent.on(SummerWorker.WORKER_EXIT, (worker) => {
-            Logger.error(`agent exit ${worker.process.pid}`);
+        this.agent.on(SummerWorker.WORKER_EXIT, () => {
+            Logger.error(`agent exit`);
             process.exit();
         });
     }
@@ -47,10 +44,10 @@ export default class SummerCluster {
      */
     private forkWorker() {
         for (let i = 0; i < this.conf.worker; i++) {
-            const worker = cluster.fork();
+            const worker = new SummerWorker({ type: WorkerType.WORKER });
             this.workers.push(worker);
-            worker.on('exit', (code, signal) => this.onWorkerExit(worker, code, signal));
-            WorkerMessage.once(worker, WorkerStatus.START_SUCCESS, this.onWorkerStart.bind(this));
+            worker.on(SummerWorker.WORKER_EXIT, (code, signal) => this.onWorkerExit(worker.worker, code, signal));
+            worker.once(WorkerMessageType.START_SUCCESS, this.onWorkerStart.bind(this));
         }
     }
 
@@ -63,7 +60,7 @@ export default class SummerCluster {
         if (this.count === this.conf.worker) {
             if (!this.isStart) {
                 this.isStart = true;
-                Logger.info(`workers started ${this.workers.map(w => w.process.pid)}`);
+                Logger.info(`workers started ${this.workers.map(w => w.worker.process.pid)}`);
                 Logger.info("application running hare http://127.0.0.1:" + this.conf.port);
             }
         }
@@ -75,14 +72,14 @@ export default class SummerCluster {
      * @param code
      * @param signal
      */
-    private onWorkerExit(worker: ClusterWorker, code: number, signal: string) {
+    private onWorkerExit(worker: Worker, code: number, signal: string) {
         if (this.isStart) {
             const index = this.workers.findIndex(w => w.process.pid === worker.process.pid);
             this.workers.splice(index, 1);
-            const w = cluster.fork({ NODE_WORK_TYPE: Worker.WORKER });
+            const w = new SummerWorker({ type: WorkerType.WORKER });
             this.count--;
             this.workers.push(w);
-            WorkerMessage.on(w, WorkerStatus.START_SUCCESS, this.onWorkerStart.bind(this));
+            w.on(WorkerMessageType.START_SUCCESS, this.onWorkerStart.bind(this));
 
             Logger.error(`Worker pid=${worker.process.pid} exit, code ${code}, signal ${signal}`);
         } else {

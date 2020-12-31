@@ -2,7 +2,7 @@ import Loader from "../util/loader";
 import ParserDecorate from "../util/parser-decorate";
 import {invoke} from "./invoke";
 import {Config, StarterHandler} from "../config/config";
-import {sendMessage, WorkerStatus} from "../runtime/worker";
+import {sendMessage, WorkerMessageType} from "../runtime/worker";
 
 const bodyParser = require("body-parser");
 const path = require("path");
@@ -54,7 +54,7 @@ export default class Application {
             if (this.starterHandler)
             this.starterHandler.after && this.starterHandler.after(app);
             // 通知主进程 启动成功
-            sendMessage(WorkerStatus.START_SUCCESS, process.pid);
+            sendMessage(WorkerMessageType.START_SUCCESS, process.pid);
         });
     }
 
