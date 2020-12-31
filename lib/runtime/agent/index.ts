@@ -1,13 +1,22 @@
-import {sendMessage, WorkerMessageType} from "../worker";
+import {getWorkerType, sendMessage, WorkerMessageType, WorkerType} from "../worker";
 import {loadSchedule} from "./schedule";
-import Logger from "../../util/logger";
 
 export function initAgent() {
     try {
         loadSchedule();
-        sendMessage(WorkerMessageType.START_SUCCESS);
+        sendMessage({
+            type: WorkerMessageType.START_SUCCESS,
+            data: null,
+            to: WorkerType.MASTER,
+            form: getWorkerType(),
+        });
     } catch (e) {
-        sendMessage(WorkerMessageType.START_FAIL, e.message);
+        sendMessage({
+            type: WorkerMessageType.START_FAIL,
+            data: e.message,
+            to: WorkerType.MASTER,
+            form: getWorkerType(),
+        });
     }
 }
 

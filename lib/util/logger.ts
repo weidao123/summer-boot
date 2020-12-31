@@ -21,7 +21,7 @@ const logger = new Console({stdout, stderr: stdout });
 
 type LoggerLevel = "INFO" | "DEBUG" | "ERROR" | "WARNING";
 
-function getLogContent(level: LoggerLevel, msg: string) {
+function getLogContent(level: LoggerLevel, msg: string | Error) {
     const d = new Date();
     const time = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`;
     return `[${time}] [${level}] ${msg}`;
@@ -50,7 +50,7 @@ export default class Logger {
         console.debug(msg);
     }
 
-    public static error(str: string) {
+    public static error(str: string | Error) {
         const msg = getLogContent("ERROR", str);
         logger.error("\x1B[31m%s\x1B[0m", msg);
         console.error("\x1B[31m%s\x1B[0m", msg);

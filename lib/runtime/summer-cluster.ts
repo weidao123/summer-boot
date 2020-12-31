@@ -1,9 +1,10 @@
 import {WorkerType, WorkerMessagePayload, WorkerMessageType} from "./worker";
-import {Worker} from "cluster";
+import {Worker, Address} from "cluster";
 import {Config} from "..";
 import Logger from "../util/logger";
 import SummerWorker from "./summer-worker";
 
+const ip = require("ip");
 const pkg = require("../../package.json");
 
 /**
@@ -15,54 +16,59 @@ export default class SummerCluster {
     private readonly conf: any;
     private agent: SummerWorker;
 
-    private count: number = 0;
-    private isStart = false;
-
     constructor() {
         Logger.info(`[master] node version ${process.version} summer-boot version ${pkg.version}`);
         this.conf = Config.getConfig();
         this.agent = new SummerWorker({ type: WorkerType.AGENT });
 
-        this.agent.on(WorkerMessageType.START_SUCCESS, () => {
-            this.forkWorker();
-            Logger.info(`agent started`);
-        });
-
+        this.agent.on(WorkerMessageType.START_SUCCESS, this.forkWorker.bind(this));
+        this.agent.on(SummerWorker.WORKER_EXIT, () => process.exit());
         this.agent.on(WorkerMessageType.START_FAIL, (data) => {
             Logger.error(`agent started error ${data.data}`);
             process.exit();
         });
+        this.agent.on(WorkerMessageType.TO_ALL_WORKER, this.agent2worker.bind(this));
+    }
 
-        this.agent.on(SummerWorker.WORKER_EXIT, () => {
-            Logger.error(`agent exit`);
-            process.exit();
-        });
+    /**
+     * 转发给所有的工作进程
+     * @param payload
+     */
+    private agent2worker(payload: WorkerMessagePayload) {
+        this.workers.forEach(w => w.send(payload));
+    }
+
+    /**
+     * 转发给所有的工作进程
+     * @param payload
+     */
+    private worker2agent(payload: WorkerMessagePayload) {
+        this.agent.send(payload);
+    }
+
+    private forkWorker() {
+        for (let i = 0; i < this.conf.worker; i++) { this.fork(); }
     }
 
     /**
      * fork 子进程
      */
-    private forkWorker() {
-        for (let i = 0; i < this.conf.worker; i++) {
-            const worker = new SummerWorker({ type: WorkerType.WORKER });
-            this.workers.push(worker);
-            worker.on(SummerWorker.WORKER_EXIT, (code, signal) => this.onWorkerExit(worker.worker, code, signal));
-            worker.once(WorkerMessageType.START_SUCCESS, this.onWorkerStart.bind(this));
-        }
+    private fork() {
+        const worker = new SummerWorker({ type: WorkerType.WORKER });
+        this.workers.push(worker);
+        worker.on(SummerWorker.WORKER_EXIT, this.onWorkerExit.bind(this));
+        worker.once(WorkerMessageType.WORKER_LISTEN, this.onWorkerListen.bind(this));
+        worker.on(WorkerMessageType.TO_AGENT, this.worker2agent.bind(this));
+        return worker;
     }
 
     /**
      * 监听子进程启动
-     * @param data
      */
-    private onWorkerStart(data: WorkerMessagePayload<number>) {
-        this.count++;
-        if (this.count === this.conf.worker) {
-            if (!this.isStart) {
-                this.isStart = true;
-                Logger.info(`workers started ${this.workers.map(w => w.worker.process.pid)}`);
-                Logger.info("application running hare http://127.0.0.1:" + this.conf.port);
-            }
+    private onWorkerListen(address: Address) {
+        const isStart = this.workers.length === this.conf.worker;
+        if (isStart) {
+            Logger.info(`application running hare http://${ip.address()}:${address.port}`);
         }
     }
 
@@ -73,17 +79,10 @@ export default class SummerCluster {
      * @param signal
      */
     private onWorkerExit(worker: Worker, code: number, signal: string) {
-        if (this.isStart) {
-            const index = this.workers.findIndex(w => w.process.pid === worker.process.pid);
+        if (this.workers.length === this.conf.worker) {
+            const index = this.workers.findIndex(w => w.worker.process.pid === worker.process.pid);
             this.workers.splice(index, 1);
-            const w = new SummerWorker({ type: WorkerType.WORKER });
-            this.count--;
-            this.workers.push(w);
-            w.on(WorkerMessageType.START_SUCCESS, this.onWorkerStart.bind(this));
-
-            Logger.error(`Worker pid=${worker.process.pid} exit, code ${code}, signal ${signal}`);
-        } else {
-            Logger.error(`worker exit pid ${worker.process.pid}`);
+            this.fork();
         }
     }
 }

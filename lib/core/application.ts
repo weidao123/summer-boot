@@ -2,9 +2,9 @@ import Loader from "../util/loader";
 import ParserDecorate from "../util/parser-decorate";
 import {invoke} from "./invoke";
 import {Config, StarterHandler} from "../config/config";
-import {sendMessage, WorkerMessageType} from "../runtime/worker";
 
 const bodyParser = require("body-parser");
+const ip = require("ip");
 const path = require("path");
 const express = require("express");
 
@@ -50,12 +50,8 @@ export default class Application {
         }
         app.all("*", invoke);
         const port = Config.getConfig().port;
-        app.listen(port, () => {
-            if (this.starterHandler)
-            this.starterHandler.after && this.starterHandler.after(app);
-            // 通知主进程 启动成功
-            sendMessage(WorkerMessageType.START_SUCCESS, process.pid);
+        app.listen(port, ip.address(), undefined, () => {
+            if (this.starterHandler) this.starterHandler.after && this.starterHandler.after(app);
         });
     }
-
 }
