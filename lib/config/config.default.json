@@ -4,7 +4,9 @@
   "baseDir": "app",
   "log": {
     "dir": "logs",
-    "name": "summer-boot-web.log"
+    "name": "summer-boot-web.log",
+    "level": "INFO",
+    "size": "1kb"
   },
   "ssr": {
     "output": "dist",

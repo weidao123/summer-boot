@@ -37,7 +37,7 @@ export default class SummerWorker extends EventEmitter {
     }
 
     private close(code, signal) {
-        Logger.warning(`worker [closed] pid ${this.worker.process.pid} type ${this.type} code ${code} signal ${signal}`);
+        Logger.warn(`worker [closed] pid ${this.worker.process.pid} type ${this.type} code ${code} signal ${signal}`);
     }
 
     private online() {
@@ -45,12 +45,12 @@ export default class SummerWorker extends EventEmitter {
     }
 
     private disconnect() {
-        Logger.warning(`worker [disconnect] pid ${this.worker.process.pid} type ${this.type}`);
+        Logger.warn(`worker [disconnect] pid ${this.worker.process.pid} type ${this.type}`);
     }
 
     private listening(address: Address) {
         Logger.info(`worker [listening] pid ${this.worker.process.pid} type ${this.type}`);
-        this.emit(WorkerMessageType.WORKER_LISTEN, address);
+        this.emit(WorkerMessageType.WORKER_LISTEN, address, this);
     }
 
     private error() {

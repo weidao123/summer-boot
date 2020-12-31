@@ -25,7 +25,7 @@ function getServerBundle(ServerConf, callback?) {
             }
             status = status.toJson();
             status.errors.forEach(Logger.error);
-            status.warnings.forEach(Logger.warning);
+            status.warnings.forEach(Logger.warn);
             const serverBundlePath = path.join(
                 ServerConf.output.path,
                 name

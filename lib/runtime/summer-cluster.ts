@@ -55,7 +55,6 @@ export default class SummerCluster {
      */
     private fork() {
         const worker = new SummerWorker({ type: WorkerType.WORKER });
-        this.workers.push(worker);
         worker.on(SummerWorker.WORKER_EXIT, this.onWorkerExit.bind(this));
         worker.once(WorkerMessageType.WORKER_LISTEN, this.onWorkerListen.bind(this));
         worker.on(WorkerMessageType.TO_AGENT, this.worker2agent.bind(this));
@@ -65,7 +64,8 @@ export default class SummerCluster {
     /**
      * 监听子进程启动
      */
-    private onWorkerListen(address: Address) {
+    private onWorkerListen(address: Address, worker: SummerWorker) {
+        this.workers.push(worker);
         const isStart = this.workers.length === this.conf.worker;
         if (isStart) {
             Logger.info(`application running hare http://${ip.address()}:${address.port}`);
