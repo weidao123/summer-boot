@@ -41,6 +41,7 @@ function consoleLog(msg: string | Error, type: LoggerLevel) {
     if (keys.indexOf(type) >= keys.indexOf(log.level)) {
         logger[lower](str);
     }
+    renameLogfile();
 }
 
 /**
@@ -69,12 +70,13 @@ function renameLogfile() {
     const size = parseSize(log.size);
     if (fs.existsSync(logPath) && fs.statSync(logPath).size <= size) return;
     const parser = path.parse(logPath);
-    const getPath = (index) => path.resolve(parser.dir, `${parser.name}(${index})${parser.ext}`);
+    const ymd = SummerDate.format("YYYY-MM-DD");
+    const getPath = (index) => path.resolve(parser.dir, `${parser.name}-${ymd}(${index})${parser.ext}`);
     let index = 1;
     while (true) {
-        const nPath = getPath(index);
-        if (!fs.existsSync(nPath)) {
-            const write = fs.createWriteStream(nPath);
+        const p = getPath(index);
+        if (!fs.existsSync(p)) {
+            const write = fs.createWriteStream(p);
             write.on("open", () => {
                 const read = fs.createReadStream(logPath);
                 read.pipe(write);
