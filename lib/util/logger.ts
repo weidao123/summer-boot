@@ -1,5 +1,6 @@
 import {Config} from "../config/config";
 import chalk from "chalk";
+import SummerDate from "./date";
 
 const Console = require("console").Console;
 const fs = require("fs");
@@ -21,7 +22,7 @@ export enum LoggerLevel {
 
 function getLogContent(level: LoggerLevel, msg: string | Error) {
     const d = new Date();
-    const time = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`;
+    const time = SummerDate.currentDate();
     return `${time} [${level}] ${msg}`;
 }
 
@@ -71,13 +72,17 @@ function renameLogfile() {
     const getPath = (index) => path.resolve(parser.dir, `${parser.name}(${index})${parser.ext}`);
     let index = 1;
     while (true) {
-        if (fs.existsSync(getPath(index))) {
-            index++;
-        } else {
-            if (fs.existsSync(logPath)) {
-                fs.renameSync(logPath, getPath(index));
-            }
+        const nPath = getPath(index);
+        if (!fs.existsSync(nPath)) {
+            const write = fs.createWriteStream(nPath);
+            write.on("open", () => {
+                const read = fs.createReadStream(logPath);
+                read.pipe(write);
+                read.on("end", () => fs.writeFileSync(logPath, ""))
+            });
             break;
+        } else {
+            index++;
         }
     }
 }
