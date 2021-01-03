@@ -26,12 +26,22 @@ export default class SummerDate {
         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     }
 
-    public static form(d: number) {
+    public static form(d: number | string | Date) {
         const { year, month, day, hours, minutes, seconds } = this.getDate(d);
         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     }
 
-    public static format(d: number) {
-
+    public static format(f: string, d?: number | string | Date) {
+        const { year, month, day, hours, minutes, seconds } = this.getDate();
+        const table = {
+            "YYYY": year,
+            "MM": month,
+            "DD": day,
+            "HH": hours,
+            "mm": minutes,
+            "ss": seconds,
+        };
+        Object.keys(table).forEach(k => f = f.replace(k, table[k]));
+        return f;
     }
 }
