@@ -6,7 +6,6 @@ import {initAgent} from "./agent";
 import SummerCluster from "./summer-cluster";
 
 const cluster = require("cluster");
-const args = process.argv.slice(2);
 
 if (cluster.isMaster) {
     new SummerCluster();

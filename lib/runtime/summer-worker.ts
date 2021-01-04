@@ -14,8 +14,8 @@ export default class SummerWorker extends EventEmitter {
 
     constructor(opts: any = {}) {
         super();
-        this.worker = cluster.fork({ SUMMER_WORKER_TYPE: opts.type }) as Worker;
-        this.type = opts.type;
+        this.worker = cluster.fork(opts) as Worker;
+        this.type = opts.SUMMER_WORKER_TYPE;
         this.worker.on("exit", this.onExit.bind(this));
         this.worker.on("message", this.onMessage.bind(this));
         this.worker.on("listening", this.listening.bind(this));

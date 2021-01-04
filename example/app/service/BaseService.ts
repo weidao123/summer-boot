@@ -1,4 +1,4 @@
-import {Service} from "../../lib";
+import {Service} from "summer-boot";
 
 @Service()
 export default class BaseService {

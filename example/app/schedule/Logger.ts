@@ -1,4 +1,4 @@
-import {Autowrite, Schedule, ScheduleHandler, ScheduleJob, sendMessage, WorkerMessageType} from "../../lib";
+import {Autowrite, Schedule, ScheduleHandler, ScheduleJob, sendMessage, WorkerMessageType} from "summer-boot";
 import BaseService from "../service/BaseService";
 
 @Schedule("30 * * * * *")

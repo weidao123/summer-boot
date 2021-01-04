@@ -1,5 +1,5 @@
 const fs = require("fs");
-const {resolve} = require("path");
+const {resolve, parse} = require("path");
 
 /**
  * Loader 加载器， 用于加载Service、Controller、Middleware等
@@ -57,9 +57,11 @@ export default class Loader {
             return modules;
         }
 
-        const p = require(path);
-        if (typeof p === 'function' || p.default) {
-            modules.set(path, typeof p === 'function' ? p : p.default);
+        if (['.ts', '.js'].includes(parse(path).ext)) {
+            const p = require(path);
+            if (typeof p === 'function' || p.default) {
+                modules.set(path, typeof p === 'function' ? p : p.default);
+            }
         }
         return modules;
     }

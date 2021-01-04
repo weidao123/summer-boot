@@ -10,7 +10,7 @@ import {
     Req,
     RequestMapping,
     RequestMethod
-} from "../../lib";
+} from "summer-boot";
 import BaseService from "../service/BaseService";
 import {Request} from "express";
 

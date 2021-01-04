@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import {ErrorHandler, ExceptionHandler} from "../../lib";
+import {ErrorHandler, ExceptionHandler} from "summer-boot";
 
 @ErrorHandler()
 export default class GlobalErrorHandler implements ExceptionHandler {

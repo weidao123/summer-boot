@@ -1,4 +1,4 @@
-import {Component} from "../../lib";
+import {Component} from "summer-boot";
 
 @Component()
 export default class RandomInt {
