@@ -1,6 +1,6 @@
 ## summer-boot
 
-一款类基于DI(依赖注入)和IOC(控制反转)的NodeJS框架，模块间高内聚低耦合
+一款轻量级的基于express的、使用DI(依赖注入)和IOC(控制反转)的NodeJS框架，模块间高内聚低耦合
 
 并集成了vue-ssr只需要少量的配置即可开启vue的ssr渲染，Demo可参考下面连接
 
@@ -16,9 +16,20 @@ yarn add summer-boot
 // package.json 在script启动脚本添加命令
 {
     "script": {
-        "satrt": "summer-boot"
+        "dev": "summer-boot dev",
+        "start": "summer-boot start"
     }
 }
+```
+
+```typescript
+// 推荐项目结构
+app
+ --controller
+ --service
+ --config
+ --schedule
+ --interceptor
 ```
 
 
@@ -28,7 +39,7 @@ yarn add summer-boot
 * 默认会扫描*/app*目录下的所有组件
 * 如需要在应用启动前或启动后做一些初始化工作，可在 */app/application.ts* 这个文件里面实现 *StarterHandler* 接口
 * 应用启动时默认会启动一个Master进程以及Agent进程和cpu核数的Worker进程（这个可在配置文件中覆盖）
-* 应用启动前会加载 */summer-boot.json* 这个配置文件，可用来覆盖默认的一些配置
+* 应用启动前会加载 *app/config/config.default.ts* 这个配置文件，可用来覆盖默认的一些配置(下面会有可配置项)
 
 #### 装饰器
 
