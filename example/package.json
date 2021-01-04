@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "summer-boot dev",
-    "start": "summer-boot start"
+    "dev": "summer-dev",
+    "start": "summer-bin start",
+    "build": "summer-bin build",
+    "update": "npm uninstall summer-boot && npm install"
   },
   "keywords": [],
   "author": "",

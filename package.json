@@ -1,6 +1,6 @@
 {
   "name": "summer-boot",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
   "description": "mvc to node",
@@ -17,6 +17,7 @@
   "scripts": {
     "rel": "npm run build && npm publish",
     "build": "gulp",
+    "build:t": "ts-node ./lib/runtime/build.ts",
     "test": "mocha -r ts-node/register ./test/*.ts"
   },
   "dependencies": {
@@ -51,6 +52,7 @@
     "README.md"
   ],
   "bin": {
-    "summer-boot": "dist/runtime/bootstrap.js"
+    "summer-bin": "dist/runtime/index.js",
+    "summer-dev": "dist/runtime/run.js"
   }
 }

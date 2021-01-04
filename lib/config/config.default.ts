@@ -1,20 +1,23 @@
+
+const workerDir = process.env.NODE_ENV === "development" ? "app" : "dist";
+
 export default {
     "port": 8080,
     "worker": 2,
-    "baseDir": "app",
+    "baseDir": workerDir,
     "log": {
         "dir": "logs",
         "name": "summer-boot-web.log",
         "level": "INFO",
-        "size": "1kb"
+        "size": "1mb"
     },
     "ssr": {
         "output": "dist",
         "template": "index.html",
         "enable": false,
     },
-    "scheduleDir": "app/schedule",
-    "configDir": "app/config",
+    "scheduleDir": `${workerDir}/schedule`,
+    "configDir":  `${workerDir}/config`,
     "staticDir": "public",
-    "starterHandlerFile": "app/application"
+    "starterHandlerFile": `${workerDir}/application`
 }

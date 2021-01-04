@@ -16,8 +16,9 @@ yarn add summer-boot
 // package.json 在script启动脚本添加命令
 {
     "script": {
-        "dev": "summer-boot dev",
-        "start": "summer-boot start"
+        "dev": "summer-dev",
+        "start": "summer-bin start",
+        "build": "summer-bin build"
     }
 }
 ```
