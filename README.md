@@ -45,6 +45,7 @@ yarn add summer-boot
 * [x] Body (注入接收到的body参数)
 * [x] PathVariable (注入url上的参数)
 * [x] Get、Post、Put、Delete、Patch
+* [x] @Schedule("30 * * * * *") （定时任务）
 
 ### Example
 
@@ -171,3 +172,44 @@ export default class GlobalErrorHandler implements ExceptionHandler {
     }
 }
 ```
+
+### 定时任务
+
+* 底层基于 node-schedule 实现
+
+* 定时任务只会在agent进程执行
+
+```typescript
+@Schedule("30 * * * * *")
+export default class LoggerSchedule implements ScheduleHandler{
+
+    public job: ScheduleJob;
+
+    public run(date: Date): void {
+        console.log("定时任务被执行--->pid=" + process.pid);
+    }
+}
+```
+
+### 全局配置
+
+* 配置文件位于 app/config/config.default.ts
+
+  ```typescript
+  export default {
+    "port": 8080, // 启动端口
+    "worker": 2,  // 启动进程数量
+    "log": {
+      "dir": "logs",  // 日志文件数据目录
+      "name": "summer-boot-web.log", // 日志文件名称
+      "level": "INFO",  // 输出级别
+      "size": "1kb"   // 单个文件最大大小
+    },
+    "ssr": {    // 服务端渲染的一些配置
+      "output": "dist",
+      "template": "index.html"
+    },
+    "staticDir": "public",  // 静态文件
+  }
+  ```
+

@@ -14,7 +14,8 @@
     "removeComments": true, // 是否移除注释
     "allowJs": true,
     "emitDecoratorMetadata": true,  // 操作元数据 数据类型 返回类型等
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "listFiles": true
   },
   "exclude": ["app"]
 }
