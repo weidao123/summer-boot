@@ -1,6 +1,7 @@
-import {Request, Response, NextFunction, Application} from "express";
+import {Request, Response, Application} from "express";
 import {deepMerge} from "../util/deep-merge";
 import Loader from "../util/loader";
+import ConfigDefault from "./config.default";
 
 const path = require("path");
 const fs = require("fs");
@@ -25,7 +26,7 @@ export class Config {
 
     public static getConfig(): any {
         if (!this.conf) {
-            this.conf = require("./config.default.json");
+            this.conf = ConfigDefault;
             this.merge();
         }
         return this.conf;

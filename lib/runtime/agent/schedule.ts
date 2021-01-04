@@ -6,6 +6,7 @@ import Container from "../../core/container";
 const NodeSchedule = require("node-schedule");
 const pwd = process.cwd();
 const path = require("path");
+const fs = require("fs");
 
 type Constructor = { new(...args) }
 
@@ -22,6 +23,7 @@ export interface ScheduleHandler {
  */
 export function loadSchedule() {
     const dir = path.resolve(pwd, Config.getConfig().scheduleDir);
+    if (!fs.existsSync(dir)) return;
     const map = Loader.load(dir);
     map.forEach((func: Constructor) => {
         if (Reflect.hasMetadata(MetaKey.SCHEDULE, func)) {

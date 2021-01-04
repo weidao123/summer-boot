@@ -3,15 +3,14 @@ import axios from "axios";
 import {Config} from "..";
 import Logger from "../util/logger";
 
-const webpack = require("webpack");
 const path = require("path");
 const MemoryFs = require("memory-fs");
 const fs = require("fs");
-const ServerRender = require("vue-server-renderer");
 
 const dev = process.env.NODE_ENV === "development";
 
 function getServerBundle(ServerConf, callback?) {
+    const webpack = require("webpack");
     const compiler = webpack(ServerConf);
     const name = "vue-ssr-server-bundle.json";
 
@@ -54,6 +53,7 @@ export async function render(req: Request, serverConf) {
     const serverBundle = await getServerBundle(serverConf);
     const clientBundle = await getClientBundle();
     try {
+        const ServerRender = require("vue-server-renderer");
         const renderer = ServerRender.createBundleRenderer(serverBundle, {
             clientManifest: clientBundle,
             template,
