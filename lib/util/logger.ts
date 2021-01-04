@@ -13,19 +13,19 @@ if (!fs.existsSync(log.dir)) fs.mkdirSync(log.dir);
 const stdout = fs.createWriteStream(logPath, { flags: "a" });
 const logger = new Console({stdout, stderr: stdout });
 
-export enum LoggerLevel {
+/**
+ * 日志级别
+ */
+enum LoggerLevel {
     DEBUG = "DEBUG",
     INFO = "INFO",
     WARN = "WARN",
     ERROR = "ERROR",
 }
 
-function getLogContent(level: LoggerLevel, msg: string | Error) {
-    const d = new Date();
-    const time = SummerDate.currentDate();
-    return `${time} [${level}] ${msg}`;
-}
-
+/**
+ * 日志输出到控制台的颜色
+ */
 const LoggerLevelColor = {
     DEBUG: chalk.white,
     INFO: chalk.white,
@@ -33,8 +33,14 @@ const LoggerLevelColor = {
     ERROR: chalk.red,
 };
 
+/**
+ * 日志输出
+ * @param msg
+ * @param type
+ */
 function consoleLog(msg: string | Error, type: LoggerLevel) {
-    const str = getLogContent(type, msg);
+    const time = SummerDate.currentDate();
+    const str = `${time} [${type}] ${msg}`;
     const lower = type.toLowerCase();
     const keys = Object.keys(LoggerLevel);
     console[lower](LoggerLevelColor[type](str));
@@ -45,26 +51,7 @@ function consoleLog(msg: string | Error, type: LoggerLevel) {
 }
 
 /**
- * 解析 mb、kb单位
- * @param size
- */
-function parseSize(size: string | number) {
-    if (typeof size === "string") {
-        const num = Number(size.replace(/[a-zA-Z]/g, ""));
-        if (size.endsWith("mb")) {
-            return num * 1024 * 1024;
-        }
-        if (size.endsWith("kb")) {
-            return num * 1024;
-        }
-        throw new Error("log size format error");
-    } else {
-        return size * 1024;
-    }
-}
-
-/**
- * 超出文件大小 重命名文件
+ * 超出文件大小 重命名文件（多进程模式下、这里可能会被多个进程同时执行）
  */
 function renameLogfile() {
     const size = parseSize(log.size);
@@ -89,12 +76,32 @@ function renameLogfile() {
     }
 }
 
+/**
+ * 解析 mb、kb单位
+ * @param size (kb、mb)
+ * @return b
+ */
+function parseSize(size: string | number) {
+    if (typeof size === "string") {
+        const num = Number(size.replace(/[a-zA-Z]/g, ""));
+        if (size.endsWith("mb")) {
+            return num * 1024 * 1024;
+        }
+        if (size.endsWith("kb")) {
+            return num * 1024;
+        }
+        throw new Error("log size format error");
+    } else {
+        return size * 1024;
+    }
+}
+
+/**
+ * 暴露日志输出方法
+ */
 const Logger = {};
 Object.keys(LoggerLevel).forEach(key => Logger[key.toLowerCase()] = (str) => consoleLog(str, key as LoggerLevel));
 
-/**
- * 日志记录
- */
 export default Logger as {
     warn: (str: string) => void;
     info: (str: string) => void;

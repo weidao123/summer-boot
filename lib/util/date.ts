@@ -1,7 +1,7 @@
 /**
  * 获取当时间、日期
  */
-export default class SummerDate {
+export default class SummerDate extends Date {
 
     public static getDate(d?: number | string | Date) {
         const date = new Date(d || Date.now());

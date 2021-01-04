@@ -21,7 +21,8 @@ export default class Loader {
         if (!fs.existsSync(path) || !fs.statSync(path).isFile()) {
             return null;
         }
-        return require(path).default;
+        const r = require(path);
+        return r.default || r;
     }
 
     /**
@@ -56,12 +57,10 @@ export default class Loader {
             return modules;
         }
 
-        const controller = require(path);
-        if (controller.default) {
-            modules.set(path, controller.default);
+        const p = require(path);
+        if (typeof p === 'function' || p.default) {
+            modules.set(path, typeof p === 'function' ? p : p.default);
         }
         return modules;
     }
-
-
 }

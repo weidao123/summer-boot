@@ -1,4 +1,6 @@
 import {Request, Response, NextFunction, Application} from "express";
+import {deepMerge} from "../util/deep-merge";
+import Loader from "../util/loader";
 
 const path = require("path");
 const fs = require("fs");
@@ -31,10 +33,10 @@ export class Config {
 
     public static merge() {
         // 加载默认的配置文件
-        const confPath = path.resolve(process.cwd(), 'summer-boot.json');
-        if (fs.existsSync(confPath)) {
-            const conf = require(confPath) || {};
-            Object.assign(Config.conf, conf);
+        const p = Loader.getPathAsExtname(path.resolve(process.cwd(), this.conf.configDir));
+        const conf = Loader.loadFile(p);
+        if (conf) {
+            deepMerge(this.conf, conf);
         }
     }
 }
