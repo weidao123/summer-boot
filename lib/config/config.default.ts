@@ -1,5 +1,6 @@
+import {getEnv} from "../util/env";
 
-const workerDir = process.env.NODE_ENV === "development" ? "app" : "dist";
+const workerDir = getEnv() === "development" ? "app" : "dist";
 
 export default {
     "port": 8080,

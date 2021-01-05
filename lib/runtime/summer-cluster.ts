@@ -3,6 +3,7 @@ import {Worker, Address} from "cluster";
 import {Config} from "..";
 import Logger from "../util/logger";
 import SummerWorker from "./summer-worker";
+import {getEnv} from "../util/env";
 
 const ip = require("ip");
 const pkg = require("../../package.json");
@@ -18,11 +19,11 @@ export default class SummerCluster {
 
     constructor() {
         Logger.info(`[master] node version ${process.version} summer-boot version ${pkg.version}`);
-        Logger.info(`[master] env for ${process.env.NODE_ENV}`);
+        Logger.info(`[master] env for ${getEnv()}`);
         this.conf = Config.getConfig();
         this.agent = new SummerWorker({
             SUMMER_WORKER_TYPE: WorkerType.AGENT,
-            NODE_ENV: process.env.NODE_ENV,
+            NODE_ENV: getEnv(),
         });
 
         this.agent.on(WorkerMessageType.START_SUCCESS, this.forkWorker.bind(this));
@@ -60,7 +61,7 @@ export default class SummerCluster {
     private fork() {
         const worker = new SummerWorker({
             SUMMER_WORKER_TYPE: WorkerType.WORKER,
-            NODE_ENV: process.env.NODE_ENV,
+            NODE_ENV: getEnv(),
         });
         worker.on(SummerWorker.WORKER_EXIT, this.onWorkerExit.bind(this));
         worker.once(WorkerMessageType.WORKER_LISTEN, this.onWorkerListen.bind(this));
