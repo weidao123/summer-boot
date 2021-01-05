@@ -6,38 +6,17 @@
 
 [vue-ssr-template](https://github.com/weidao123/vue-ssr-template)
 
-### 安装
+### 使用
 
 ```javascript
-yarn add summer-boot
-```
-
-```json
-// package.json 在script启动脚本添加命令
-{
-    "script": {
-        "dev": "summer-dev",
-        "start": "summer-bin start",
-        "build": "summer-bin build"
-    }
-}
-```
-
-```typescript
-// 推荐项目结构
-app
- --controller
- --service
- --config
- --schedule
- --interceptor
+git clone https://github.com/weidao123/summer-boot-example
 ```
 
 
 
 ### 说明
 
-* 默认会扫描*/app*目录下的所有组件
+* 开发环境默认会扫描*/app*目录下的所有组件
 * 如需要在应用启动前或启动后做一些初始化工作，可在 */app/application.ts* 这个文件里面实现 *StarterHandler* 接口
 * 应用启动时默认会启动一个Master进程以及Agent进程和cpu核数的Worker进程（这个可在配置文件中覆盖）
 * 应用启动前会加载 *app/config/config.default.ts* 这个配置文件，可用来覆盖默认的一些配置(下面会有可配置项)
@@ -59,7 +38,7 @@ app
 * [x] Get、Post、Put、Delete、Patch
 * [x] @Schedule("30 * * * * *") （定时任务）
 
-### Example
+### 装饰器 Demo
 
 * */app/controller/user.ts*
 
