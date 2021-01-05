@@ -1,5 +1,4 @@
 import {Request} from "express";
-import axios from "axios";
 import {Config} from "..";
 import Logger from "../util/logger";
 
@@ -42,6 +41,7 @@ async function getClientBundle() {
         const output = path.resolve(process.cwd(), ssr.output, "vue-ssr-client-manifest.json");
         return require(output);
     }
+    const axios = require("axios");
     const { data } = await axios.get(`http://localhost:${port}/vue-ssr-client-manifest.json`);
     return data;
 }

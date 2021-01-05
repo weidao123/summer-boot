@@ -1,9 +1,9 @@
 import {Config} from "../config/config";
-import chalk from "chalk";
 import SummerDate from "./date";
 
 const Console = require("console").Console;
 const fs = require("fs");
+const chalk = require("chalk");
 const path = require("path");
 
 const {log} = Config.getConfig();

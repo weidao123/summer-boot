@@ -17,7 +17,7 @@ export default {
         "enable": false,
     },
     "scheduleDir": `${workerDir}/schedule`,
-    "configDir":  `${workerDir}/config`,
+    "configDir":  `${workerDir}/config/config.default`,
     "staticDir": "public",
     "starterHandlerFile": `${workerDir}/application`
 }

@@ -57,7 +57,8 @@ export default class Loader {
             return modules;
         }
 
-        if (['.ts', '.js'].includes(parse(path).ext)) {
+        const ext = parse(path).ext;
+        if (['.ts', '.js'].includes(ext) && !path.endsWith('.d.ts')) {
             const p = require(path);
             if (typeof p === 'function' || p.default) {
                 modules.set(path, typeof p === 'function' ? p : p.default);
