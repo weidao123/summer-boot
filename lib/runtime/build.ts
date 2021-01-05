@@ -39,12 +39,18 @@ function removeDir(p: string) {
     }
 }
 
-console.log("start build...");
+console.log("> start build...");
 if (fs.existsSync(path.resolve(process.cwd(), "dist"))) {
     removeDir(path.resolve(process.cwd(), "dist"));
-    console.log("remove old dist dir");
+    console.log("> delete old dist dir");
 }
 
 let params = "";
 Object.keys(tsConfig).forEach(k => params += `--${k} ${tsConfig[k]} `);
-exec(   `tsc ${params}`);
+exec(   `tsc ${params}`, (err, stdin, stdout) => {
+    if (!err) {
+        console.log("> build success");
+    } else {
+        console.error(err);
+    }
+});

@@ -6,7 +6,6 @@ import SummerWorker from "./summer-worker";
 
 const ip = require("ip");
 const pkg = require("../../package.json");
-const args = process.argv.slice(2);
 
 /**
  * 集群模式启动
@@ -19,10 +18,11 @@ export default class SummerCluster {
 
     constructor() {
         Logger.info(`[master] node version ${process.version} summer-boot version ${pkg.version}`);
+        Logger.info(`[master] env for ${process.env.NODE_ENV}`);
         this.conf = Config.getConfig();
         this.agent = new SummerWorker({
             SUMMER_WORKER_TYPE: WorkerType.AGENT,
-            NODE_ENV: args[0] === 'start' ? 'production' : 'development',
+            NODE_ENV: process.env.NODE_ENV,
         });
 
         this.agent.on(WorkerMessageType.START_SUCCESS, this.forkWorker.bind(this));
@@ -60,7 +60,7 @@ export default class SummerCluster {
     private fork() {
         const worker = new SummerWorker({
             SUMMER_WORKER_TYPE: WorkerType.WORKER,
-            NODE_ENV: args[0] === 'start' ? 'production' : 'development',
+            NODE_ENV: process.env.NODE_ENV,
         });
         worker.on(SummerWorker.WORKER_EXIT, this.onWorkerExit.bind(this));
         worker.once(WorkerMessageType.WORKER_LISTEN, this.onWorkerListen.bind(this));

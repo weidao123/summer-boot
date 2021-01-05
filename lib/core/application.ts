@@ -4,7 +4,6 @@ import {invoke} from "./invoke";
 import {Config, StarterHandler} from "../config/config";
 
 const bodyParser = require("body-parser");
-const ip = require("ip");
 const path = require("path");
 const express = require("express");
 
@@ -50,7 +49,7 @@ export default class Application {
         }
         app.all("*", invoke);
         const port = Config.getConfig().port;
-        app.listen(port, ip.address(), undefined, () => {
+        app.listen(port, () => {
             if (this.starterHandler) this.starterHandler.after && this.starterHandler.after(app);
         });
     }

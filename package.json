@@ -17,7 +17,6 @@
   "scripts": {
     "rel": "npm run build && npm publish",
     "build": "gulp",
-    "build:t": "ts-node ./lib/runtime/build.ts",
     "test": "mocha -r ts-node/register ./test/*.ts",
     "publish": "npm publish && node rem.js"
   },
