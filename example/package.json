@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "summer-dev",
+    "dev": "summer-bin dev",
     "start": "summer-bin start",
     "build": "summer-bin build",
     "update": "npm uninstall summer-boot && npm install"

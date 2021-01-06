@@ -4,7 +4,7 @@ const fs = require("fs");
 
 const outDir = path.resolve(process.cwd(), "dist");
 
-const tsConfig = {
+export const tsConfig = {
     "target": "es5",
     "module": "commonjs",
     "outDir": outDir,

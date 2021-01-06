@@ -15,7 +15,10 @@
     "allowJs": true,
     "emitDecoratorMetadata": true,  // 操作元数据 数据类型 返回类型等
     "allowSyntheticDefaultImports": true,
-    "listFiles": true
+    "listFiles": true,
+    "lib": [
+      "es2015"
+    ]
   },
   "exclude": ["app"]
 }

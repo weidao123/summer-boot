@@ -1,6 +1,6 @@
 {
   "name": "summer-boot",
-  "version": "0.2.91",
+  "version": "0.3.0",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
   "description": "mvc to node",
@@ -17,15 +17,14 @@
   "scripts": {
     "rel": "npm run build && npm publish",
     "build": "gulp",
-    "test": "mocha -r ts-node/register ./test/*.ts",
-    "cro": "cross-env NODE_ENV=111 ts-node ./test/test.ts",
-    "publish": "npm publish && node rem.js"
+    "test": "mocha -r ts-node/register ./test/*.ts"
   },
   "dependencies": {
     "@types/express": "^4.17.9",
     "body-parser": "^1.19.0",
     "chalk": "^4.1.0",
     "cross-env": "^7.0.2",
+    "cross-spawn": "^7.0.3",
     "express": "^4.17.1",
     "ip": "^1.1.5",
     "memory-fs": "^0.5.0",
@@ -52,7 +51,6 @@
     "README.md"
   ],
   "bin": {
-    "summer-bin": "dist/runtime/index.js",
-    "summer-dev": "dist/runtime/run.js"
+    "summer-bin": "dist/runtime/index.js"
   }
 }
