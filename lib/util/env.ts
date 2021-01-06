@@ -1,9 +1,18 @@
 
-export enum Env {
-    production = "production",
-    development = "development",
-}
+export class Env {
+    public static production = "production";
+    public static development = "development";
 
-export function getEnv(): Env {
-    return process.env.NODE_ENV as Env;
+    public static get idProduction(): boolean {
+        return this.production === this.env;
+    }
+
+    public static get isDevelopment(): boolean {
+        return this.development === this.env;
+    }
+
+    public static get env() {
+        return process.env.NODE_ENV;
+    }
+
 }

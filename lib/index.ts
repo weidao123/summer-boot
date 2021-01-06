@@ -5,6 +5,7 @@ export * from "./core/decorate";
 export * from "./config/config";
 export * from "./runtime/agent";
 export * from "./runtime/worker";
+export * from "./util";
 
 export { render } from "./ssr";
 

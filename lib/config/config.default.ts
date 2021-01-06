@@ -1,6 +1,6 @@
-import {getEnv} from "../util/env";
+import {Env} from "../util";
 
-const workerDir = getEnv() === "development" ? "app" : "dist";
+const workerDir = Env.isDevelopment ? "app" : "dist";
 
 export default {
     "port": 8080,
