@@ -9,6 +9,5 @@ export {
     Loader,
     ParserDecorate,
 }
-
-export * from "./deep-merge";
-export * from "./env";
+export { deepMerge } from "./deep-merge";
+export { Env } from "./env";

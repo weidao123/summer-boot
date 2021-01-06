@@ -1,4 +1,4 @@
-import {Env} from "../util";
+import {Env} from "../util/env";
 
 const workerDir = Env.isDevelopment ? "app" : "dist";
 
