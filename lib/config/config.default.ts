@@ -20,5 +20,11 @@ export default {
     "scheduleDir": `${workerDir}/schedule`,
     "configDir":  `${workerDir}/config/config.default`,
     "staticDir": "public",
-    "starterHandlerFile": `${workerDir}/application`
+    "starterHandlerFile": `${workerDir}/application`,
+    "env": {
+        "dev": Env.development,
+        "start": Env.production,
+        "test": Env.testing,
+        "pre": Env.prerelease,
+    }
 }

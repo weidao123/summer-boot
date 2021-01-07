@@ -1,6 +1,6 @@
 {
   "name": "summer-boot",
-  "version": "0.3.13",
+  "version": "0.3.14",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
   "description": "mvc to node",
@@ -16,6 +16,7 @@
   "license": "MIT",
   "scripts": {
     "rel": "npm run build && npm publish",
+    "local": "ts-node dist/runtime/index.js dev",
     "build": "gulp",
     "test": "mocha -r ts-node/register ./test/*.ts"
   },

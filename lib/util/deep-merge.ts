@@ -5,10 +5,6 @@
  */
 export function deepMerge(obj1: object, obj2: object) {
     for (const k in obj1) {
-        if (typeof obj1[k] !== typeof obj2[k]) {
-            continue;
-        }
-
         if (!isEmpty(obj2[k]) && typeof obj1[k] === 'object') {
             deepMerge(obj1[k], obj2[k]);
             continue;

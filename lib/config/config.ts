@@ -4,7 +4,6 @@ import Loader from "../util/loader";
 import ConfigDefault from "./config.default";
 
 const path = require("path");
-const fs = require("fs");
 
 export interface ExceptionHandler {
     exception(req: Request, res: Response, e: Error);
@@ -20,11 +19,15 @@ export interface StarterHandler {
     after(app: Application): void;
 }
 
+export type Conf = {
+    [K in keyof typeof ConfigDefault]?: typeof ConfigDefault[K];
+};
+
 export class Config {
 
-    private static conf;
+    private static conf: Conf;
 
-    public static getConfig(): any {
+    public static getConfig(): Conf {
         if (!this.conf) {
             this.conf = ConfigDefault;
             this.merge();

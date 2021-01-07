@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "summer-bin dev",
     "start": "summer-bin start",
+    "test": "summer-bin test",
     "build": "summer-bin build",
+    "pre": "summer-bin pre",
     "update": "npm uninstall summer-boot && npm install"
   },
   "keywords": [],

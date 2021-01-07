@@ -1,3 +1,5 @@
+import {Logger} from "../util";
+
 const path = require("path");
 const { exec } = require("child_process");
 const fs = require("fs");
@@ -39,17 +41,17 @@ function removeDir(p: string) {
     }
 }
 
-console.log("> start build...");
+Logger.debug("start build...");
 if (fs.existsSync(path.resolve(process.cwd(), "dist"))) {
     removeDir(path.resolve(process.cwd(), "dist"));
-    console.log("> delete old dist dir");
+    Logger.debug("delete old dist dir");
 }
 
 let params = "";
 Object.keys(tsConfig).forEach(k => params += `--${k} ${tsConfig[k]} `);
 exec(   `tsc ${params}`, (err, stdin, stdout) => {
     if (!err) {
-        console.log("> build success");
+        Logger.debug("build success");
     } else {
         console.error(err);
     }
