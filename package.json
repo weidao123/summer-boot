@@ -1,6 +1,6 @@
 {
   "name": "summer-boot",
-  "version": "0.3.14",
+  "version": "0.3.15",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
   "description": "mvc to node",

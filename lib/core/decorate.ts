@@ -16,6 +16,7 @@ export enum MetaKey {
     INTERCEPTOR_HANDLER = "INTERCEPTOR_HANDLER",
     ERROR_HANDLER = "ERROR_HANDLER",
     SCHEDULE = "SCHEDULE",
+    TYPE_CONVERT = "TYPE_CONVERT",
 }
 
 export enum RequestMethod {
@@ -36,10 +37,30 @@ export interface MethodOptions {
     method?: RequestMethod;
 }
 
+export enum ParamType {
+    string,
+    number,
+    boolean,
+    object,
+    date,
+    symbol,
+    entity,
+}
+
+export interface ParamConvert {
+    type: ParamType;
+    checked?: boolean;
+    entity?: Constructor;
+}
+
 export type Constructor = { new (...args) }
 
 function defineComponent(target: Constructor) {
     Reflect.defineMetadata(MetaKey.COMPONENT, {}, target);
+}
+
+function defineRequest(func: Function, op: MethodOptions) {
+    Reflect.defineMetadata(MetaKey.METHOD, op, func)
 }
 
 /**
@@ -65,42 +86,52 @@ export function RequestMapping(o: MethodOptions | string) {
         op.method = o.method || RequestMethod.GET;
     }
     return function (target: Object, name: string, desc: any) {
-        Reflect.defineMetadata(MetaKey.METHOD, op, target[name]);
+        defineRequest(target[name], op);
     }
 }
 
 export function Get(path: string) {
-    const op: MethodOptions = {method: RequestMethod.GET, path: path};
     return function (target: Object, name: string, desc: any) {
-        Reflect.defineMetadata(MetaKey.METHOD, op, target[name]);
+        defineRequest(target[name], {
+            method: RequestMethod.GET,
+            path: path,
+        });
     }
 }
 
 export function Post(path: string) {
-    const op: MethodOptions = {method: RequestMethod.POST, path: path};
     return function (target: Object, name: string, desc: any) {
-        Reflect.defineMetadata(MetaKey.METHOD, op, target[name]);
+        defineRequest(target[name], {
+            method: RequestMethod.POST,
+            path: path,
+        });
     }
 }
 
 export function Delete(path: string) {
-    const op: MethodOptions = {method: RequestMethod.DELETE, path: path};
     return function (target: Object, name: string, desc: any) {
-        Reflect.defineMetadata(MetaKey.METHOD, op, target[name]);
+        defineRequest(target[name], {
+            method: RequestMethod.DELETE,
+            path: path,
+        });
     }
 }
 
 export function Put(path: string) {
-    const op: MethodOptions = {method: RequestMethod.PUT, path: path};
     return function (target: Object, name: string, desc: any) {
-        Reflect.defineMetadata(MetaKey.METHOD, op, target[name]);
+        defineRequest(target[name], {
+            method: RequestMethod.PUT,
+            path: path,
+        });
     }
 }
 
 export function Patch(path: string) {
-    const op: MethodOptions = {method: RequestMethod.PATCH, path: path};
     return function (target: Object, name: string, desc: any) {
-        Reflect.defineMetadata(MetaKey.METHOD, op, target[name]);
+        defineRequest(target[name], {
+            method: RequestMethod.PATCH,
+            path: path,
+        });
     }
 }
 
@@ -108,10 +139,13 @@ export function Patch(path: string) {
  * 参数装饰器
  * @constructor
  */
-export function PathVariable(key: string) {
+export function PathVariable(key: string, convert?: ParamConvert | ParamType) {
     return function (target: Object, name: string, index: number) {
+        if (typeof convert === 'number') {
+            convert = { type: convert }
+        }
         const metadata = Reflect.getMetadata(MetaKey.METHOD_PARAM, target[name]);
-        let arr = [{ index, key }];
+        let arr = [{ index, key, convert }];
         if (metadata && Array.isArray(metadata)) {
             arr = arr.concat(metadata)
         }
@@ -139,16 +173,26 @@ export function Res(target: Object, name: string, index: number) {
  * 注入query参数
  * @constructor
  */
-export function Query(target: Object, name: string, index: number) {
-    Reflect.defineMetadata(MetaKey.QUERY, { index }, target[name]);
+export function Query(convert?: ParamConvert | ParamType) {
+    return function (target: Object, name: string, index: number) {
+        if (typeof convert === 'number') {
+            convert = { type: convert }
+        }
+        Reflect.defineMetadata(MetaKey.QUERY, { index, convert }, target[name]);
+    }
 }
 
 /**
  * 注入body参数
  * @constructor
  */
-export function Body(target: Object, name: string, index: number) {
-    Reflect.defineMetadata(MetaKey.BODY, { index }, target[name]);
+export function Body(convert?: ParamConvert | ParamType) {
+    return function(target: Object, name: string, index: number) {
+        if (typeof convert === 'number') {
+            convert = { type: convert }
+        }
+        Reflect.defineMetadata(MetaKey.BODY, { index, convert }, target[name]);
+    }
 }
 
 /**
