@@ -66,8 +66,13 @@ function defineRequest(func: Function, op: MethodOptions) {
 /**
  * 控制器
  */
-export function Controller(options: ControllerOptions = {}) {
-    options.path = options.path || "/";
+export function Controller(o: string | ControllerOptions = {}) {
+    const options: ControllerOptions = {};
+    if (typeof o === "string") {
+        options.path = o;
+    } else {
+        options.path = options.path || "/";
+    }
     return function (target: Function) {
         Reflect.defineMetadata(MetaKey.CONTROLLER, options, target);
     }

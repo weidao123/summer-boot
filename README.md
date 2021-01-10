@@ -164,6 +164,28 @@ export default class GlobalErrorHandler implements ExceptionHandler {
 }
 ```
 
+### 文件上传
+
+```typescript
+import {Controller, Multipart, Post, Req, SummerDate} from "summer-boot";
+
+@Controller({ path: "/upload" })
+export default class UploadController {
+
+    @Post("/file")
+    public async file(@Req req) {
+        const multipart = await Multipart.parse(req);
+        if (multipart.hasFile("file")) {
+            return {
+                msg: "文件不存在"
+            }
+        }
+        await multipart.save(f => `${SummerDate.currentDate()}-${f.originName}`);
+        return "success";
+    }
+}
+```
+
 ### 定时任务
 
 * 底层基于 node-schedule 实现
