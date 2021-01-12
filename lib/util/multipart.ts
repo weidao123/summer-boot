@@ -95,7 +95,7 @@ export default class Multipart extends EventEmitter {
                 const filename = cb(file);
                 const destPath = path.resolve(this.conf.uploadDir, filename);
                 if (!fs.existsSync(this.conf.uploadDir)) {
-                    fs.mkdirSync(this.conf.uploadDir);
+                    fs.mkdirSync(this.conf.uploadDir, { recursive: true });
                 }
                 const stream = fs.createWriteStream(destPath);
                 stream.write(file.buffer, e => e ? reject(e) : resolve());

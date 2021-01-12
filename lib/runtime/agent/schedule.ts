@@ -22,7 +22,7 @@ export interface ScheduleHandler {
  * 加载定时任务
  */
 export function loadSchedule() {
-    const dir = path.resolve(pwd, Config.getConfig().scheduleDir);
+    const dir = path.resolve(pwd, Config.getConfig().baseDir);
     if (!fs.existsSync(dir)) return;
     const map = Loader.load(dir);
     map.forEach((func: Constructor) => {

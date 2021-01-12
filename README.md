@@ -167,7 +167,7 @@ export default class GlobalErrorHandler implements ExceptionHandler {
 ### 文件上传
 
 ```typescript
-import {Controller, Multipart, Post, Req, SummerDate} from "summer-boot";
+import {Controller, Multipart, Post, Req} from "summer-boot";
 
 @Controller({ path: "/upload" })
 export default class UploadController {
@@ -180,7 +180,8 @@ export default class UploadController {
                 msg: "文件不存在"
             }
         }
-        await multipart.save(f => `${SummerDate.currentDate()}-${f.originName}`);
+        // 保存并重命名
+        await multipart.save(f => `${Date.now()-${f.originName}`);
         return "success";
     }
 }

@@ -17,7 +17,6 @@ export default {
         "template": "index.html",
         "enable": false,
     },
-    "scheduleDir": `${workerDir}/schedule`,
     "configDir":  `${workerDir}/config/config.default`,
     "staticDir": "public",
     "starterHandlerFile": `${workerDir}/application`,

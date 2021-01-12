@@ -71,7 +71,7 @@ export function Controller(o: string | ControllerOptions = {}) {
     if (typeof o === "string") {
         options.path = o;
     } else {
-        options.path = options.path || "/";
+        options.path = o.path || "/";
     }
     return function (target: Function) {
         Reflect.defineMetadata(MetaKey.CONTROLLER, options, target);
